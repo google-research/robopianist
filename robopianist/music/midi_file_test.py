@@ -14,16 +14,11 @@
 
 """Tests for midi_file.py."""
 
-from pathlib import Path
-
 from absl.testing import absltest, parameterized
 from note_seq.protobuf import compare, music_pb2
 
+from robopianist import music
 from robopianist.music import midi_file
-
-_HERE = Path(__file__).parent
-
-_TEST_MIDI = _HERE / "data" / "pig_single_finger" / "arabesque_no_1-1.proto"
 
 
 class MidiFileTest(parameterized.TestCase):
@@ -33,31 +28,31 @@ class MidiFileTest(parameterized.TestCase):
 
     @parameterized.parameters(0.5, 1.0, 2.0)
     def test_temporal_stretch(self, stretch_factor: float) -> None:
-        midi = midi_file.MidiFile.from_file(_TEST_MIDI)
+        midi = music.load("CMajorScaleTwoHands")
         stretched_midi = midi.stretch(stretch_factor)
         self.assertEqual(stretched_midi.n_notes, midi.n_notes)
         self.assertEqual(stretched_midi.duration, midi.duration * stretch_factor)
 
     @parameterized.parameters(-1, 0)
     def test_temporal_stretch_raises_value_error(self, stretch_factor: float) -> None:
-        midi = midi_file.MidiFile.from_file(_TEST_MIDI)
+        midi = music.load("CMajorScaleTwoHands")
         with self.assertRaises(ValueError):
             midi.stretch(stretch_factor)
 
     def test_temporal_stretch_no_op(self) -> None:
-        midi = midi_file.MidiFile.from_file(_TEST_MIDI)
+        midi = music.load("CMajorScaleTwoHands")
         stretched_midi = midi.stretch(1.0)
         self.assertProtoEquals(stretched_midi.seq, midi.seq)
 
     @parameterized.parameters(-2, -1, 0, 1, 2)
     def test_transpose(self, amount: int) -> None:
-        midi = midi_file.MidiFile.from_file(_TEST_MIDI)
+        midi = music.load("CMajorScaleTwoHands")
         stretched_midi = midi.transpose(amount)
         self.assertEqual(stretched_midi.n_notes, midi.n_notes)
         # TODO(kevin): Check that the notes are actually transposed.
 
     def test_transpose_no_op(self) -> None:
-        midi = midi_file.MidiFile.from_file(_TEST_MIDI)
+        midi = music.load("CMajorScaleTwoHands")
         transposed_midi = midi.transpose(0)
         self.assertProtoEquals(transposed_midi.seq, midi.seq)
 

@@ -125,7 +125,7 @@ setup(
             excludes=[],
         ),
     },
-    python_requires=">=3.8<3.11",
+    python_requires=">=3.8, <3.11",
     install_requires=core_requirements,
     classifiers=classifiers,
     extras_require={

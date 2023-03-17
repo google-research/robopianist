@@ -1,5 +1,10 @@
 # RoboPianist: A Benchmark for High-Dimensional Robot Control
 
+[![build][tests-badge]][tests]
+
+[tests-badge]: https://github.com/google-research/robopianist/actions/workflows/ci.yml/badge.svg
+[tests]: https://github.com/google-research/robopianist/actions/workflows/ci.yml
+
 Software and tasks for high-dimensional robot control, powered by [MuJoCo](https://mujoco.org/).
 
 ![RoboPianist teaser image](./docs/teaser1x3.jpeg)

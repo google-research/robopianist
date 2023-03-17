@@ -16,10 +16,13 @@
 
 from absl.testing import absltest, parameterized
 
-from robopianist import music
+from robopianist import _PROJECT_ROOT, music
 from robopianist.music import midi_file
 
+_PIG_DIR = _PROJECT_ROOT / "robopianist" / "music" / "data" / "pig_single_finger"
 
+
+@absltest.skipIf(not _PIG_DIR.exists(), "PIG dataset not found.")
 class ConstantsTest(parameterized.TestCase):
     def test_constants(self) -> None:
         # Check that all constants are non-empty.
@@ -35,6 +38,7 @@ class ConstantsTest(parameterized.TestCase):
         self.assertTrue(set(music.ETUDE_MIDIS).issubset(set(music.PIG_MIDIS)))
 
 
+@absltest.skipIf(not _PIG_DIR.exists(), "PIG dataset not found.")
 class LoadTest(parameterized.TestCase):
     def test_raises_key_error_on_invalid_midi(self) -> None:
         """Test that loading an invalid string MIDI raises a KeyError."""

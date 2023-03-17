@@ -32,7 +32,7 @@ class RoboPianistSuiteTest(parameterized.TestCase):
         for name, array_spec in observation_spec.items():
             array_spec.validate(observation[name])
 
-    @parameterized.parameters(*suite.ALL)
+    @parameterized.parameters(*suite.DEBUG)
     def test_task_runs(self, environment_name: str) -> None:
         """Tests task loading and observation spec validity."""
         env = suite.load(environment_name, seed=_SEED)
