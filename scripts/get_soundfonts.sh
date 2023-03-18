@@ -36,3 +36,7 @@ rm -rf FluidR3_GM.zip
 # MuseScore_General.sf2.
 LINK=https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General.sf2
 wget $LINK -O third_party/soundfonts/MuseScore_General.sf2
+
+# Make a copy of the soundfonts in robopianist/soundfonts.
+mkdir -p robopianist/soundfonts
+cp third_party/soundfonts/* robopianist/soundfonts

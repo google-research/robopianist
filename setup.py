@@ -25,6 +25,7 @@ from setuptools.command.build_py import build_py
 
 _here = Path(__file__).resolve().parent
 
+_soundfont_dir = _here / "third_party" / "soundfonts"
 _menagerie_dir = _here / "third_party" / "mujoco_menagerie"
 _hand_dir = _here / "robopianist" / "models" / "hands" / "third_party"
 
@@ -133,11 +134,36 @@ class _CopyMenagerieModels(cmd.Command):
         shutil.copytree(_menagerie_dir / "shadow_hand", _hand_dir / "shadow_hand")
 
 
+class _CopySoundfonts(cmd.Command):
+    """Copy the soundfonts to robopianist/models/soundfonts/."""
+
+    def initialize_options(self) -> None:
+        pass
+
+    def finalize_options(self) -> None:
+        pass
+
+    def run(self) -> None:
+        if not _soundfont_dir.exists() or not list(_soundfont_dir.iterdir()):
+            raise RuntimeError(
+                "The soundfont directory is empty. Please run "
+                "bash scripts/install_deps.sh to download the basic soundfont."
+            )
+        _package_soundfonts_dir = _here / "robopianist" / "soundfonts"
+        if _package_soundfonts_dir.exists():
+            shutil.rmtree(_package_soundfonts_dir)
+        _package_soundfonts_dir.mkdir(exist_ok=True, parents=True)
+        shutil.copy(
+            _soundfont_dir / "TimGM6mb.sf2", _package_soundfonts_dir / "TimGM6mb.sf2"
+        )
+
+
 class _BuildExt(build_ext):
     """Copy menagerie models in build_ext stage."""
 
     def run(self) -> None:
         self.run_command("copy_menagerie_models")
+        self.run_command("copy_soundfonts")
         build_ext.run(self)
 
 
@@ -146,6 +172,7 @@ class _BuildPy(build_py):
 
     def run(self) -> None:
         self.run_command("copy_menagerie_models")
+        self.run_command("copy_soundfonts")
         build_py.run(self)
 
 
@@ -182,5 +209,6 @@ setup(
         "build_ext": _BuildExt,
         "build_py": _BuildPy,
         "copy_menagerie_models": _CopyMenagerieModels,
+        "copy_soundfonts": _CopySoundfonts,
     },
 )

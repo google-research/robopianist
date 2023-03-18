@@ -18,12 +18,16 @@ jobs:
         git submodule init
         git submodule update
     - name: Install dependencies
+      shell: bash
+      run: |
+        bash scripts/install_deps.sh
+    - name: Prepare Python
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
     - name: Build and publish
       env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         python setup.py sdist bdist_wheel

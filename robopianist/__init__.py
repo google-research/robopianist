@@ -14,13 +14,13 @@
 
 from pathlib import Path
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # Path to the root of the project.
 _PROJECT_ROOT = Path(__file__).parent.parent
 
 # Path to the soundfont SF2 file.
-_SOUNDFONT_PATH = _PROJECT_ROOT / "third_party" / "soundfonts"
+_SOUNDFONT_PATH = _PROJECT_ROOT / "robopianist" / "soundfonts"
 _DEFAULT_SF2_PATH = _SOUNDFONT_PATH / "TimGM6mb.sf2"
 _SALAMANDER_SF2_PATH = _SOUNDFONT_PATH / "SalamanderGrandPiano.sf2"
 if _SALAMANDER_SF2_PATH.exists():
