@@ -19,9 +19,6 @@ __version__ = "1.0.0"
 # Path to the root of the project.
 _PROJECT_ROOT = Path(__file__).parent.parent
 
-# Path to the Menagerie submodule.
-MENAGERIE_ROOT = _PROJECT_ROOT / "third_party" / "mujoco_menagerie"
-
 # Path to the soundfont SF2 file.
 _SOUNDFONT_PATH = _PROJECT_ROOT / "third_party" / "soundfonts"
 _DEFAULT_SF2_PATH = _SOUNDFONT_PATH / "TimGM6mb.sf2"
@@ -40,6 +37,5 @@ else:
 
 __all__ = [
     "__version__",
-    "MENAGERIE_ROOT",
     "SF2_PATH",
 ]

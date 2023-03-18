@@ -94,12 +94,14 @@ def main(_) -> None:
             action[-1] = timestep.observation["goal"][-1]
             return action
 
+    policy = Oracle()
+
     if not _RECORD.value:
-        viewer.launch(env, policy=Oracle())
+        viewer.launch(env, policy=policy)
     else:
         timestep = env.reset()
         while not timestep.last():
-            action = Oracle()(timestep)
+            action = policy(timestep)
             timestep = env.step(action)
 
 

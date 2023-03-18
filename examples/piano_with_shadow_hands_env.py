@@ -120,18 +120,20 @@ def main(_) -> None:
                 return actions
             return zeros
 
+    policy = Policy()
+
     if not _RECORD.value:
         if _HEADLESS.value:
             timestep = env.reset()
             while not timestep.last():
-                action = Policy()(timestep)
+                action = policy(timestep)
                 timestep = env.step(action)
         else:
-            viewer.launch(env, policy=Policy())
+            viewer.launch(env, policy=policy)
     else:
         timestep = env.reset()
         while not timestep.last():
-            action = Policy()(timestep)
+            action = policy(timestep)
             timestep = env.step(action)
 
 

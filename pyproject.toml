@@ -1,15 +1,14 @@
 [tool.black]
 target-version = ["py310"]
-extend-exclude = "third_party"
 
 [tool.mypy]
 ignore_missing_imports = true
-exclude = ["third_party"]
+exclude = ["third_party", "dist", "build"]
 
 [tool.pytest.ini_options]
-norecursedirs = ["third_party"]
+norecursedirs = ["third_party", "dist", "build"]
 
 [tool.ruff]
-extend-exclude = ["third_party"]
+extend-exclude = ["third_party", "dist", "build"]
 select = ["E", "F", "I", "W"]
 ignore = ["E501"]

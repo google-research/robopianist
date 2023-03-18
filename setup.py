@@ -15,11 +15,18 @@
 import fnmatch
 import os
 import re
+import shutil
+from distutils import cmd
 from pathlib import Path
 
 from setuptools import find_packages, setup
+from setuptools.command.build_ext import build_ext
+from setuptools.command.build_py import build_py
 
 _here = Path(__file__).resolve().parent
+
+_menagerie_dir = _here / "third_party" / "mujoco_menagerie"
+_hand_dir = _here / "robopianist" / "models" / "hands" / "third_party"
 
 name = "robopianist"
 
@@ -78,6 +85,8 @@ author_email = "kevinarmandzakka@gmail.com"
 
 description = "A benchmark for high-dimensional robot control"
 
+keywords = "reinforcement-learning mujoco bimanual dexterous-manipulation piano"
+
 
 # Reference: https://github.com/deepmind/dm_control/blob/main/setup.py
 def find_data_files(package_dir, patterns, excludes=()):
@@ -104,6 +113,42 @@ def find_data_files(package_dir, patterns, excludes=()):
     return list(paths)
 
 
+class _CopyMenagerieModels(cmd.Command):
+    """Copy the menagerie models to robopianist/models/hands/third_party/."""
+
+    def initialize_options(self) -> None:
+        pass
+
+    def finalize_options(self) -> None:
+        pass
+
+    def run(self) -> None:
+        if not _menagerie_dir.exists() or not list(_menagerie_dir.iterdir()):
+            raise RuntimeError(
+                "The menagerie directory is empty. Please run git submodule init &&"
+                "git submodule update to download the menagerie models."
+            )
+        if _hand_dir.exists():
+            shutil.rmtree(_hand_dir)
+        shutil.copytree(_menagerie_dir / "shadow_hand", _hand_dir / "shadow_hand")
+
+
+class _BuildExt(build_ext):
+    """Copy menagerie models in build_ext stage."""
+
+    def run(self) -> None:
+        self.run_command("copy_menagerie_models")
+        build_ext.run(self)
+
+
+class _BuildPy(build_py):
+    """Copy menagerie models in build_py stage."""
+
+    def run(self) -> None:
+        self.run_command("copy_menagerie_models")
+        build_py.run(self)
+
+
 setup(
     name=name,
     version=version,
@@ -114,10 +159,11 @@ setup(
     description=description,
     long_description=readme,
     long_description_content_type="text/markdown",
-    url=f"https://github.com/kevinzakka/{name}",
+    keywords=keywords,
+    url=f"https://github.com/google-research/{name}",
     license="Apache License 2.0",
     license_files=("LICENSE",),
-    packages=find_packages(),
+    packages=find_packages(exclude=["examples"]),
     package_data={
         name: find_data_files(
             package_dir=name,
@@ -131,5 +177,10 @@ setup(
     extras_require={
         "test": test_requirements,
         "dev": dev_requirements,
+    },
+    cmdclass={
+        "build_ext": _BuildExt,
+        "build_py": _BuildPy,
+        "copy_menagerie_models": _CopyMenagerieModels,
     },
 )

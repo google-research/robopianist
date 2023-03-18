@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
 from typing import Dict, Tuple
 
-from robopianist import MENAGERIE_ROOT
+_HERE = Path(__file__).resolve().parent
+_SHADOW_HAND_DIR = _HERE / "third_party" / "shadow_hand"
 
 NQ = 24  # Number of joints.
 NU = 20  # Number of actuators.
@@ -47,5 +49,5 @@ FINGERTIP_COLORS: Tuple[Tuple[float, float, float], ...] = (
 )
 
 # Path to the shadow hand E3M5 XML file.
-RIGHT_SHADOW_HAND_XML = MENAGERIE_ROOT / "shadow_hand" / "right_hand.xml"
-LEFT_SHADOW_HAND_XML = MENAGERIE_ROOT / "shadow_hand" / "left_hand.xml"
+RIGHT_SHADOW_HAND_XML = _SHADOW_HAND_DIR / "right_hand.xml"
+LEFT_SHADOW_HAND_XML = _SHADOW_HAND_DIR / "left_hand.xml"

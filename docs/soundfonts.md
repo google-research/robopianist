@@ -24,5 +24,7 @@
 
 ## Links
 
-1. [Musescore](https://musescore.org/en/handbook/3/soundfonts-and-sfz-files)
-2. [Soundfonts4u](https://sites.google.com/site/soundfonts4u/)
+Check out these links for more soundfonts:
+
+* [Musescore](https://musescore.org/en/handbook/3/soundfonts-and-sfz-files)
+* [Soundfonts4u](https://sites.google.com/site/soundfonts4u/)
