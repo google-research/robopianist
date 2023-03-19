@@ -1,12 +1,14 @@
 # RoboPianist: A Benchmark for High-Dimensional Robot Control
 
 [![build][tests-badge]][tests]
-[![license][license-badge]][license]
+[![PyPI Python Version][pypi-versions-badge]][pypi]
+[![PyPI version][pypi-badge]][pypi]
 
 [tests-badge]: https://github.com/google-research/robopianist/actions/workflows/ci.yml/badge.svg
 [tests]: https://github.com/google-research/robopianist/actions/workflows/ci.yml
-[license-badge]: https://img.shields.io/badge/license-Apache%202-blue.svg
-[license]: https://github.com/google-research/robopianist/blob/main/LICENSE
+[pypi-versions-badge]: https://img.shields.io/pypi/pyversions/robopianist
+[pypi-badge]: https://badge.fury.io/py/robopianist.svg
+[pypi]: https://pypi.org/project/robopianist/
 
 ![RoboPianist teaser image](./docs/teaser1x3.jpeg)
 
@@ -17,9 +19,10 @@ This codebase contains software and tasks for the benchmark, and is powered by [
 - [Getting Started](#getting-started)
 - [Installation](#installation)
   - [Install from source](#install-from-source)
-    - [Optional: Download additional soundfonts](#optional-download-additional-soundfonts)
   - [Install from PyPI](#install-from-pypi)
+  - [Optional: Download additional soundfonts](#optional-download-additional-soundfonts)
 - [MIDI Dataset](#midi-dataset)
+- [CLI](#cli)
 - [Contributing](#contributing)
 - [FAQ](#faq)
 - [Citing RoboPianist](#citing-robopianist)
@@ -64,14 +67,6 @@ pip install -e ".[dev]"
 
 To test your installation, run `make test` and verify that all tests pass.
 
-#### Optional: Download additional soundfonts
-
-We recommend you install additional soundfonts to improve the quality of the synthesized audio. To do so, run:
-
-```bash
-bash scripts/get_soundfonts.sh
-```
-
 ### Install from PyPI
 
 First, install the prerequisite dependencies:
@@ -89,9 +84,29 @@ conda activate pianist
 pip install --upgrade robopianist
 ```
 
+### Optional: Download additional soundfonts
+
+We recommend you install additional soundfonts to improve the quality of the synthesized audio.
+
+If you installed from source, the easiest way to download the soundfonts is to run the following script:
+
+```bash
+bash scripts/get_soundfonts.sh
+```
+
+If you installed from PyPI, you can download the soundfonts using the RoboPianist CLI:
+
+```bash
+robopianist --download-soundfonts
+```
+
 ## MIDI Dataset
 
 Unfortunately, the PIG dataset cannot be redistributed on GitHub due to licensing restrictions. You will need to download it from the website and preprocess it with our script. See [docs/dataset](docs/dataset) for more information.
+
+## CLI
+
+RoboPianist comes with a command line interface (CLI) that can be used to download additional soundfonts, play MIDI files, and more. To see a list of available commands, run `robopianist --help`.
 
 ## Contributing
 
@@ -119,7 +134,7 @@ If you use RoboPianist in your work, please use the following citation:
 We would like to thank the following people for making this project possible:
 
 - [Philipp Wu](https://www.linkedin.com/in/wuphilipp/) and [Mohit Shridhar](https://mohitshridhar.com/) for being a constant source of inspiration and support.
-- [Ilya Kostrikov](https://www.kostrikov.xyz/) for RL debugging support.
+- [Ilya Kostrikov](https://www.kostrikov.xyz/) for constantly raising the bar for RL engineering and for invaluable debugging help.
 - The [Magenta](https://magenta.tensorflow.org/) team for helpful pointers and feedback.
 - The [MuJoCo](https://mujoco.org/) team for the development of the MuJoCo physics engine and their support throughout the project.
 

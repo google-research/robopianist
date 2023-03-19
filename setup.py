@@ -102,4 +102,5 @@ setup(
         "dev": dev_requirements,
     },
     zip_safe=False,
+    entry_points={"console_scripts": [f"{name}={name}.cli:main"]},
 )
