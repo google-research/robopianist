@@ -157,6 +157,7 @@ setup(
     license="Apache License 2.0",
     license_files=("LICENSE",),
     packages=find_packages(exclude=["examples"]),
+    include_package_data=True,
     python_requires=">=3.8, <3.11",
     install_requires=core_requirements,
     classifiers=classifiers,
