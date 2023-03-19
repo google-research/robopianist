@@ -36,7 +36,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.version:
-        print(robopianist.__version__)
+        print(f"robopianist {robopianist.__version__}")
         return
 
     if args.download_soundfonts:
