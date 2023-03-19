@@ -1,4 +1,7 @@
-recursive-include robopianist/models *.xml
 recursive-include robopianist/models/hands/third_party *
-recursive-include robopianist/soundfonts *.sf2
+recursive-include robopianist/soundfonts *
 recursive-include robopianist/music/data *
+include robopianist/py.typed
+include README.md
+include LICENSE
+include CITATION.cff

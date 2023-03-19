@@ -14,8 +14,25 @@
 # limitations under the License.
 #
 # Install dependencies (macOS and Linux).
+# Command line arguments:
+#   --no-soundfonts: Skip downloading soundfonts.
 
 set -x
+
+SKIP_SOUNDFONTS=false
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        --no-soundfonts)
+            SKIP_SOUNDFONTS=true
+            shift
+            ;;
+        *)
+            echo "Unknown argument: $key"
+            exit 1
+            ;;
+    esac
+done
 
 # Install fluidsynth and portaudio.
 if [[ $OSTYPE == darwin* ]]; then
@@ -34,9 +51,28 @@ else
     echo "Unsupported OS"
 fi
 
-# Download TimGM6mb.sf2 soundfont.
-mkdir -p third_party/soundfonts
-LINK=https://sourceforge.net/p/mscore/code/HEAD/tree/trunk/mscore/share/sound/TimGM6mb.sf2?format=raw
-if [ ! -f third_party/soundfonts/TimGM6mb.sf2 ]; then
-    wget $LINK -O third_party/soundfonts/TimGM6mb.sf2
+# Install soundfonts.
+if [ "$SKIP_SOUNDFONTS" = false ]; then
+    # Download TimGM6mb.sf2 soundfont.
+    mkdir -p third_party/soundfonts
+    LINK=https://sourceforge.net/p/mscore/code/HEAD/tree/trunk/mscore/share/sound/TimGM6mb.sf2?format=raw
+    if [ ! -f third_party/soundfonts/TimGM6mb.sf2 ]; then
+        wget $LINK -O third_party/soundfonts/TimGM6mb.sf2
+    fi
+
+    # Copy soundfonts to robopianist.
+    mkdir -p robopianist/soundfonts
+    if [ ! -d "third_party/soundfonts" ]; then
+    echo "third_party/soundfonts does not exist. Run scripts/get_soundfonts.sh first."
+    exit 1
+    fi
+    cp -r third_party/soundfonts/* robopianist/soundfonts
+
+    # Copy shadow_hand menagerie model to robopianist.
+    mkdir -p robopianist/models/hands/third_party/shadow_hand
+    if [ ! -d "third_party/mujoco_menagerie/shadow_hand" ]; then
+    echo "third_party/mujoco_menagerie/shadow_hand does not exist. Run git submodule init && git submodule update first."
+    exit 1
+    fi
+    cp -r third_party/mujoco_menagerie/shadow_hand/* robopianist/models/hands/third_party/shadow_hand
 fi

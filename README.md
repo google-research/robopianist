@@ -43,17 +43,14 @@ RoboPianist is supported on both Linux and macOS and can be installed with Pytho
 The recommended way to install this package is from source. Start by cloning the repository:
 
 ```bash
-git clone https://github.com/google-research/robopianist.git
+git clone https://github.com/google-research/robopianist.git && cd robopianist
 ```
 
 Next, install the prerequisite dependencies:
 
 ```bash
-cd robopianist
-
-bash scripts/install_deps.sh
-
 git submodule init && git submodule update
+bash scripts/install_deps.sh
 ```
 
 Finally, create a new conda environment and install RoboPianist in editable mode:
@@ -80,7 +77,7 @@ bash scripts/get_soundfonts.sh
 First, install the prerequisite dependencies:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/google-research/robopianist/main/scripts/install_deps.sh)
+bash <(curl -s https://raw.githubusercontent.com/google-research/robopianist/main/scripts/install_deps.sh) --no-soundfonts
 ```
 
 Next, create a new conda environment and install RoboPianist:
