@@ -16,9 +16,9 @@ This codebase contains software and tasks for the benchmark, and is powered by [
 
 - [Getting Started](#getting-started)
 - [Installation](#installation)
-  - [Install from PyPI](#install-from-pypi)
   - [Install from source](#install-from-source)
-  - [Optional: Download additional soundfonts](#optional-download-additional-soundfonts)
+    - [Optional: Download additional soundfonts](#optional-download-additional-soundfonts)
+  - [Install from PyPI](#install-from-pypi)
 - [MIDI Dataset](#midi-dataset)
 - [Contributing](#contributing)
 - [FAQ](#faq)
@@ -38,32 +38,9 @@ RoboPianist is supported on both Linux and macOS and can be installed with Pytho
 
 **3.11 will be supported once the numba team resolves [#8304](https://github.com/numba/numba/issues/8304).**
 
-### Install from PyPI
-
-First, install the prerequisite dependencies:
-
-```bash
-# Mac users.
-brew update
-brew install portaudio fluid-synth ffmpeg
-
-# Linux users.
-sudo apt update
-sudo apt install -y build-essential fluidsynth portaudio19-dev ffmpeg
-```
-
-Next, create a new conda environment and install RoboPianist:
-
-```bash
-conda create -n pianist python=3.10
-conda activate pianist
-
-pip install --upgrade robopianist
-```
-
 ### Install from source
 
-Start by cloning the repository:
+The recommended way to install this package is from source. Start by cloning the repository:
 
 ```bash
 git clone https://github.com/google-research/robopianist.git
@@ -90,12 +67,29 @@ pip install -e ".[dev]"
 
 To test your installation, run `make test` and verify that all tests pass.
 
-### Optional: Download additional soundfonts
+#### Optional: Download additional soundfonts
 
 We recommend you install additional soundfonts to improve the quality of the synthesized audio. To do so, run:
 
 ```bash
 bash scripts/get_soundfonts.sh
+```
+
+### Install from PyPI
+
+First, install the prerequisite dependencies:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/google-research/robopianist/main/scripts/install_deps.sh)
+```
+
+Next, create a new conda environment and install RoboPianist:
+
+```bash
+conda create -n pianist python=3.10
+conda activate pianist
+
+pip install --upgrade robopianist
 ```
 
 ## MIDI Dataset

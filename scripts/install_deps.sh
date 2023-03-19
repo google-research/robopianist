@@ -37,4 +37,6 @@ fi
 # Download TimGM6mb.sf2 soundfont.
 mkdir -p third_party/soundfonts
 LINK=https://sourceforge.net/p/mscore/code/HEAD/tree/trunk/mscore/share/sound/TimGM6mb.sf2?format=raw
-wget $LINK -O third_party/soundfonts/TimGM6mb.sf2
+if [ ! -f third_party/soundfonts/TimGM6mb.sf2 ]; then
+    wget $LINK -O third_party/soundfonts/TimGM6mb.sf2
+fi

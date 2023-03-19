@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import fnmatch
-import os
 import re
 import shutil
 from distutils import cmd
@@ -89,31 +87,6 @@ description = "A benchmark for high-dimensional robot control"
 keywords = "reinforcement-learning mujoco bimanual dexterous-manipulation piano"
 
 
-# Reference: https://github.com/deepmind/dm_control/blob/main/setup.py
-def find_data_files(package_dir, patterns, excludes=()):
-    """Recursively finds files whose names match the given shell patterns."""
-    paths = set()
-
-    def is_excluded(s):
-        for exclude in excludes:
-            if fnmatch.fnmatch(s, exclude):
-                return True
-        return False
-
-    for directory, _, filenames in os.walk(package_dir):
-        if is_excluded(directory):
-            continue
-        for pattern in patterns:
-            for filename in fnmatch.filter(filenames, pattern):
-                # NB: paths must be relative to the package directory.
-                relative_dirpath = os.path.relpath(directory, package_dir)
-                full_path = os.path.join(relative_dirpath, filename)
-                if not is_excluded(full_path):
-                    paths.add(full_path)
-
-    return list(paths)
-
-
 class _CopyMenagerieModels(cmd.Command):
     """Copy the menagerie models to robopianist/models/hands/third_party/."""
 
@@ -135,7 +108,7 @@ class _CopyMenagerieModels(cmd.Command):
 
 
 class _CopySoundfonts(cmd.Command):
-    """Copy the soundfonts to robopianist/models/soundfonts/."""
+    """Copy the soundfonts to robopianist/soundfonts/."""
 
     def initialize_options(self) -> None:
         pass
@@ -152,15 +125,10 @@ class _CopySoundfonts(cmd.Command):
         _package_soundfonts_dir = _here / "robopianist" / "soundfonts"
         if _package_soundfonts_dir.exists():
             shutil.rmtree(_package_soundfonts_dir)
-        _package_soundfonts_dir.mkdir(exist_ok=True, parents=True)
-        shutil.copy(
-            _soundfont_dir / "TimGM6mb.sf2", _package_soundfonts_dir / "TimGM6mb.sf2"
-        )
+        shutil.copytree(_soundfont_dir, _package_soundfonts_dir)
 
 
 class _BuildExt(build_ext):
-    """Copy menagerie models in build_ext stage."""
-
     def run(self) -> None:
         self.run_command("copy_menagerie_models")
         self.run_command("copy_soundfonts")
@@ -168,8 +136,6 @@ class _BuildExt(build_ext):
 
 
 class _BuildPy(build_py):
-    """Copy menagerie models in build_py stage."""
-
     def run(self) -> None:
         self.run_command("copy_menagerie_models")
         self.run_command("copy_soundfonts")
@@ -191,13 +157,6 @@ setup(
     license="Apache License 2.0",
     license_files=("LICENSE",),
     packages=find_packages(exclude=["examples"]),
-    package_data={
-        name: find_data_files(
-            package_dir=name,
-            patterns=["*.png", "*.xml", "*.typed", ".proto"],
-            excludes=[],
-        ),
-    },
     python_requires=">=3.8, <3.11",
     install_requires=core_requirements,
     classifiers=classifiers,
