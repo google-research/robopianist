@@ -4,19 +4,18 @@ Due to licensing restrictions, we are unable to redistribute the PIG dataset ins
 
 **Note: We are working with the authors of PIG to make the dataset available for download in a more convenient way.**
 
-The download will contain a zip file called `PianoFingeringDataset_v1.2.zip`. Extract the folder `PianoFingeringDataset_v1.2` from the zip file, then run the following command, in the root directory of `robopianist`:
+The download will contain a zip file called `PianoFingeringDataset_v1.2.zip`. Extract the folder `PianoFingeringDataset_v1.2` from the zip file, then use the CLI as follows:
 
 ```bash
-python scripts/pig_preprocess.py --dataset_dir /PATH/TO/PianoFingeringDataset_v1.2
+robopianist preprocess --dataset-dir /PATH/TO/PianoFingeringDataset_v1.2
 ```
 
 This will create a directory called `pig_single_finger` in `robopianist/music/data`.
 
-## Sanity Check
-
-You can use the CLI to check that the dataset has been downloaded and processed correctly:
+To double check that the dataset was successfully preprocessed, run the following command:
 
 ```bash
 robopianist --check-pig-exists
-# > PIG dataset is ready to use!
 ```
+
+If successful, it will print `PIG dataset is ready to use!`.

@@ -6,4 +6,4 @@ There are 2 MIDI files in this directory containing 2 short snippets of music ta
 
 ## `pig_single_finger`
 
-This directory will be created after the PIG dataset has been downloaded from the official website and upon running `examples/pig_preprocess.py`. These MIDI files retain their original license.
+This directory will be created after the PIG dataset has been downloaded from the official website and upon running `robopianist preprocess`. These MIDI files (saved as `.proto` files) retain their original license.
