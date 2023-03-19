@@ -95,6 +95,7 @@ setup(
     packages=find_packages(exclude=["examples"]),
     python_requires=">=3.8, <3.11",
     install_requires=core_requirements,
+    include_package_data=True,
     classifiers=classifiers,
     extras_require={
         "test": test_requirements,
