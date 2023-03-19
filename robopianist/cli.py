@@ -36,6 +36,12 @@ def main() -> None:
         help="download additional soundfonts.",
     )
 
+    parser.add_argument(
+        "--check-pig-exists",
+        action="store_true",
+        help="check that the PIG dataset was properly downloaded and processed.",
+    )
+
     subparsers = parser.add_subparsers(dest="subparser_name", help="sub-command help")
 
     player_parser = subparsers.add_parser("player")
@@ -65,6 +71,15 @@ def main() -> None:
         for file in src_dir.glob("*.sf2"):
             shutil.copy(file, dst_dir / file.name)
 
+        return
+
+    if args.check_pig_exists:
+        from robopianist import music
+
+        if len(music.PIG_MIDIS) != 150:
+            raise ValueError("PIG dataset was not properly downloaded and processed.")
+        else:
+            print("PIG dataset is ready to use!")
         return
 
     if args.subparser_name == "player":

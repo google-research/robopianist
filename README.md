@@ -102,7 +102,7 @@ robopianist --download-soundfonts
 
 ## MIDI Dataset
 
-Unfortunately, the PIG dataset cannot be redistributed on GitHub due to licensing restrictions. You will need to download it from the website and preprocess it with our script. See [docs/dataset](docs/dataset) for more information.
+The PIG dataset cannot be redistributed on GitHub due to licensing restrictions. See [docs/dataset](docs/dataset.md) for instructions on where to download and how to process the dataset.
 
 ## CLI
 
