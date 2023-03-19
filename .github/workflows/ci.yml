@@ -1,5 +1,12 @@
 name: build
-on: [push, pull_request, workflow_dispatch]
+
+on:
+  push:
+    paths-ignore:
+      - "tutorial.ipynb"
+  pull_request:
+    paths-ignore:
+      - "tutorial.ipynb"
 
 jobs:
   run-robopianist-tests:
