@@ -1,5 +1,9 @@
 # Soundfonts
 
+## What is a soundfont?
+
+## Soundfonts in RoboPianist
+
 1. `TimGM6mb.sf2`
    * [Download Link](https://sourceforge.net/p/mscore/code/HEAD/tree/trunk/mscore/share/sound/TimGM6mb.sf2?format=raw)
    * Creator: [Tim Brechbill](https://timbrechbill.com/saxguru/)
@@ -12,7 +16,9 @@
     * License: Public Domain (as of 4/3/2022)
     * Size: 1.27 GB
 
-## Links
+## Using custom soundfonts
+
+## Resources
 
 Check out these links for more soundfonts:
 

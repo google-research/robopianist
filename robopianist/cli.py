@@ -22,14 +22,25 @@ from pathlib import Path
 
 import pandas as pd
 import pretty_midi
+import requests
 from note_seq.protobuf import music_pb2
+from termcolor import cprint
+from tqdm import tqdm
 
 import robopianist
 from robopianist.music import midi_file
 
+# Dataset variables.
 _DEFAULT_SAVE_DIR = (
     robopianist._PROJECT_ROOT / "robopianist" / "music" / "data" / "pig_single_finger"
 )
+
+# Soundfont variables.
+_SOUNDFONT_DIR = robopianist._PROJECT_ROOT / "robopianist" / "soundfonts"
+_SOUNDFONTS = {
+    "TimGM6mb": "https://sourceforge.net/p/mscore/code/HEAD/tree/trunk/mscore/share/sound/TimGM6mb.sf2?format=raw",
+    "SalamanderGrandPiano": "https://freepats.zenvoid.org/Piano/SalamanderGrandPiano/SalamanderGrandPiano-SF2-V3+20200602.tar.xz",
+}
 
 
 def main() -> None:
@@ -39,12 +50,6 @@ def main() -> None:
         "--version",
         action="store_true",
         help="print the version of robopianist.",
-    )
-
-    parser.add_argument(
-        "--download-soundfonts",
-        action="store_true",
-        help="download additional soundfonts.",
     )
 
     parser.add_argument(
@@ -77,33 +82,36 @@ def main() -> None:
         help="Where to save the processed proto files.",
     )
 
+    soundfont_parser = subparsers.add_parser("soundfont")
+    soundfont_parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List all available soundfonts.",
+    )
+    soundfont_parser.add_argument(
+        "--change-default",
+        action="store_true",
+        help="Change the default soundfont.",
+    )
+    soundfont_parser.add_argument(
+        "--download",
+        action="store_true",
+        help="Download a soundfont.",
+    )
+
     args = parser.parse_args()
 
     if args.version:
         print(f"robopianist {robopianist.__version__}")
         return
 
-    if args.download_soundfonts:
-        # Download soundfonts.
-        script = robopianist._PROJECT_ROOT / "scripts" / "get_soundfonts.sh"
-        subprocess.run(["bash", str(script)], check=True)
-
-        # Copy soundfonts to robopianist directory.
-        dst_dir = robopianist._PROJECT_ROOT / "robopianist" / "soundfonts"
-        dst_dir.mkdir(parents=True, exist_ok=True)
-        src_dir = robopianist._PROJECT_ROOT / "third_party" / "soundfonts"
-        for file in src_dir.glob("*.sf2"):
-            shutil.copy(file, dst_dir / file.name)
-
-        return
-
     if args.check_pig_exists:
         from robopianist import music
 
         if len(music.PIG_MIDIS) != 150:
-            raise ValueError("PIG dataset was not properly downloaded and processed.")
+            cprint("PIG dataset was not properly downloaded and processed.", "red")
         else:
-            print("PIG dataset is ready to use!")
+            cprint("PIG dataset is ready to use!", "green")
         return
 
     if args.subparser_name == "player":
@@ -115,6 +123,67 @@ def main() -> None:
     if args.subparser_name == "preprocess":
         _preprocess_pig(Path(args.dataset_dir), Path(args.save_dir))
         return
+
+    if args.subparser_name == "soundfont":
+        if args.list:
+            sf2s = _SOUNDFONT_DIR.glob("*.sf2")
+            print("Available soundfonts:")
+            for sf2 in sf2s:
+                print(f"  {sf2.name}")
+            return
+
+        if args.change_default:
+            _change_default_soundfont()
+            return
+
+        if args.download:
+            _download_soundfont()
+            return
+
+        return
+
+
+def _set_default_soundfont(name: str) -> None:
+    # Create a .robopianistrc file if it doesn't exist.
+    rc_file = Path.home() / ".robopianistrc"
+    if not rc_file.exists():
+        rc_file.touch()
+
+    # Check that the soundfont exists.
+    soundfont = _SOUNDFONT_DIR / f"{name}.sf2"
+    if not soundfont.exists():
+        cprint(f"The soundfont {name} does not exist.", "red")
+        return
+
+    # Set the default soundfont.
+    with open(rc_file, "w") as f:
+        f.write(f"DEFAULT_SOUNDFONT={name}")
+
+    cprint(f"Default soundfont set to {name}.", "green")
+
+
+def _change_default_soundfont() -> None:
+    # Get a list of available soundfonts.
+    sf2s = _SOUNDFONT_DIR.glob("*.sf2")
+    soundfonts = [sf2.stem for sf2 in sf2s]
+    is_default = [sf2 == robopianist.SF2_PATH.stem for sf2 in soundfonts]
+
+    print("Available soundfonts:")
+    for i, soundfont in enumerate(soundfonts):
+        print(f"  ({i}) {soundfont} {'(default)' if is_default[i] else ''}")
+
+    # Get the user's choice.
+    choice = input("Enter the soundfont you want to use: ")
+    try:
+        number = int(choice)
+        if number < 0 or number >= len(soundfonts):
+            raise ValueError
+    except ValueError:
+        cprint("Invalid choice.", "red")
+        return
+
+    # Set the default soundfont.
+    _set_default_soundfont(soundfonts[number])
 
 
 @dataclass
@@ -208,3 +277,72 @@ def _preprocess_pig(dataset_dir: Path, save_dir: Path) -> None:
         # Save proto file.
         filename = save_dir / f"{piece}-{number}.proto"
         midi_file.MidiFile(seq).save(filename)
+
+
+def _download_file(url):
+    chunk_size = 1024
+    r = requests.get(url, stream=True)
+    total_size = int(r.headers.get("content-length", 0))
+    pbar = tqdm(total=total_size, unit="B", unit_scale=True)
+    with open(url.split("/")[-1], "wb") as f:
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            if chunk:
+                f.write(chunk)
+                pbar.update(len(chunk))
+
+
+def _download_soundfont() -> None:
+    soundfont_names = list(_SOUNDFONTS.keys())
+
+    is_downloaded = {}
+    for sf2 in soundfont_names:
+        if (_SOUNDFONT_DIR / f"{sf2}.sf2").exists():
+            is_downloaded[sf2] = True
+        else:
+            is_downloaded[sf2] = False
+
+    print("Which soundfont would you like to download?")
+    for i, soundfont in enumerate(_SOUNDFONTS.keys()):
+        print(
+            f"  ({i}) {soundfont} ({'downloaded' if is_downloaded[soundfont] else 'not downloaded'})"
+        )
+
+    # Get the user's choice.
+    choice = input("Enter the soundfont you want to download: ")
+    try:
+        number = int(choice)
+        if number < 0 or number >= len(_SOUNDFONTS):
+            raise ValueError
+    except ValueError:
+        cprint("Invalid choice.", "red")
+        return
+
+    # Download the soundfont.
+    url = _SOUNDFONTS[soundfont_names[number]]
+    _download_file(url)
+
+    # Custom extraction for each soundfont.
+    if soundfont_names[number] == "TimGM6mb":
+        shutil.move("TimGM6mb.sf2?format=raw", _SOUNDFONT_DIR / "TimGM6mb.sf2")
+    else:
+        subprocess.run(
+            [
+                "tar",
+                "-xvf",
+                "SalamanderGrandPiano-SF2-V3+20200602.tar.xz",
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+        shutil.move(
+            "SalamanderGrandPiano-SF2-V3+20200602/SalamanderGrandPiano-V3+20200602.sf2",
+            _SOUNDFONT_DIR / "SalamanderGrandPiano.sf2",
+        )
+        subprocess.run(
+            [
+                "rm",
+                "-r",
+                "SalamanderGrandPiano-SF2-V3+20200602.tar.xz",
+                "SalamanderGrandPiano-SF2-V3+20200602",
+            ],
+        )

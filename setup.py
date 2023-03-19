@@ -43,6 +43,8 @@ core_requirements = [
     "pyaudio >= 0.2.12",
     "pyfluidsynth >= 1.3.2",
     "scikit-learn",
+    "termcolor>=2.2.0",
+    "tqdm>=4.65.0",
 ]
 
 test_requirements = [

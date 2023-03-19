@@ -19,20 +19,33 @@ __version__ = "1.0.7"
 # Path to the root of the project.
 _PROJECT_ROOT = Path(__file__).parent.parent
 
-# Path to the soundfont SF2 file.
+# Path to the soundfont directory.
 _SOUNDFONT_PATH = _PROJECT_ROOT / "robopianist" / "soundfonts"
+
 _DEFAULT_SF2_PATH = _SOUNDFONT_PATH / "TimGM6mb.sf2"
-_SALAMANDER_SF2_PATH = _SOUNDFONT_PATH / "SalamanderGrandPiano.sf2"
-if _SALAMANDER_SF2_PATH.exists():
-    SF2_PATH = _SALAMANDER_SF2_PATH
+
+_RC_FILE = Path.home() / ".robopianistrc"
+if _RC_FILE.exists():
+    with open(_RC_FILE, "r") as f:
+        for line in f:
+            if line.startswith("DEFAULT_SOUNDFONT="):
+                soundfont_path = line.split("=")[1].strip()
+                SF2_PATH = _SOUNDFONT_PATH / f"{soundfont_path}.sf2"
+                if not SF2_PATH.exists():
+                    SF2_PATH = _DEFAULT_SF2_PATH
+                break
 else:
-    if not _DEFAULT_SF2_PATH.exists():
-        raise FileNotFoundError(
-            f"The default soundfont file {_DEFAULT_SF2_PATH} does not exist. Make "
-            "sure you have first run `bash scripts/install_deps.sh` in the root of "
-            "the project directory."
-        )
-    SF2_PATH = _DEFAULT_SF2_PATH
+    _SALAMANDER_SF2_PATH = _SOUNDFONT_PATH / "SalamanderGrandPiano.sf2"
+    if _SALAMANDER_SF2_PATH.exists():
+        SF2_PATH = _SALAMANDER_SF2_PATH
+    else:
+        if not _DEFAULT_SF2_PATH.exists():
+            raise FileNotFoundError(
+                f"The default soundfont file {_DEFAULT_SF2_PATH} does not exist. Make "
+                "sure you have first run `bash scripts/install_deps.sh` in the root of "
+                "the project directory."
+            )
+        SF2_PATH = _DEFAULT_SF2_PATH
 
 
 __all__ = [
