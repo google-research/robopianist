@@ -56,7 +56,7 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="subparser_name", help="sub-command help")
 
     player_parser = subparsers.add_parser("player")
-    player_parser.add_argument("--midi-file", default=None, help="MIDI file to play.")
+    player_parser.add_argument("--midi-file", required=True, help="MIDI file to play.")
     player_parser.add_argument(
         "--stretch", default=1.0, help="Stretch the MIDI file by this factor."
     )
@@ -107,13 +107,9 @@ def main() -> None:
         return
 
     if args.subparser_name == "player":
-        if args.midi_file is not None:
-            from robopianist import music
+        from robopianist import music
 
-            music.load(args.midi_file, stretch=args.stretch, shift=args.shift).play()
-        else:
-            player_parser.print_help()
-
+        music.load(args.midi_file, stretch=args.stretch, shift=args.shift).play()
         return
 
     if args.subparser_name == "preprocess":
