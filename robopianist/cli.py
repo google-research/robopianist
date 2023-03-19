@@ -27,10 +27,98 @@ from note_seq.protobuf import music_pb2
 import robopianist
 from robopianist.music import midi_file
 
-_HERE = Path(__file__).parent
 _DEFAULT_SAVE_DIR = (
-    _HERE.parent / "robopianist" / "music" / "data" / "pig_single_finger"
+    robopianist._PROJECT_ROOT / "robopianist" / "music" / "data" / "pig_single_finger"
 )
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        help="print the version of robopianist.",
+    )
+
+    parser.add_argument(
+        "--download-soundfonts",
+        action="store_true",
+        help="download additional soundfonts.",
+    )
+
+    parser.add_argument(
+        "--check-pig-exists",
+        action="store_true",
+        help="check that the PIG dataset was properly downloaded and processed.",
+    )
+
+    subparsers = parser.add_subparsers(dest="subparser_name", help="sub-command help")
+
+    player_parser = subparsers.add_parser("player")
+    player_parser.add_argument("--midi-file", default=None, help="MIDI file to play.")
+    player_parser.add_argument(
+        "--stretch", default=1.0, help="Stretch the MIDI file by this factor."
+    )
+    player_parser.add_argument(
+        "--shift", default=0, help="Shift the MIDI file by this many semitones."
+    )
+
+    preprocess_parser = subparsers.add_parser("preprocess")
+    preprocess_parser.add_argument(
+        "--dataset-dir",
+        required=True,
+        help="Where the PIG dataset is located.",
+    )
+    preprocess_parser.add_argument(
+        "--save-dir",
+        required=False,
+        default=str(_DEFAULT_SAVE_DIR),
+        help="Where to save the processed proto files.",
+    )
+
+    args = parser.parse_args()
+
+    if args.version:
+        print(f"robopianist {robopianist.__version__}")
+        return
+
+    if args.download_soundfonts:
+        # Download soundfonts.
+        script = robopianist._PROJECT_ROOT / "scripts" / "get_soundfonts.sh"
+        subprocess.run(["bash", str(script)], check=True)
+
+        # Copy soundfonts to robopianist directory.
+        dst_dir = robopianist._PROJECT_ROOT / "robopianist" / "soundfonts"
+        dst_dir.mkdir(parents=True, exist_ok=True)
+        src_dir = robopianist._PROJECT_ROOT / "third_party" / "soundfonts"
+        for file in src_dir.glob("*.sf2"):
+            shutil.copy(file, dst_dir / file.name)
+
+        return
+
+    if args.check_pig_exists:
+        from robopianist import music
+
+        if len(music.PIG_MIDIS) != 150:
+            raise ValueError("PIG dataset was not properly downloaded and processed.")
+        else:
+            print("PIG dataset is ready to use!")
+        return
+
+    if args.subparser_name == "player":
+        if args.midi_file is not None:
+            from robopianist import music
+
+            music.load(args.midi_file, stretch=args.stretch, shift=args.shift).play()
+        else:
+            player_parser.print_help()
+
+        return
+
+    if args.subparser_name == "preprocess":
+        _preprocess_pig(Path(args.dataset_dir), Path(args.save_dir))
+        return
 
 
 @dataclass
@@ -124,92 +212,3 @@ def _preprocess_pig(dataset_dir: Path, save_dir: Path) -> None:
         # Save proto file.
         filename = save_dir / f"{piece}-{number}.proto"
         midi_file.MidiFile(seq).save(filename)
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "--version",
-        action="store_true",
-        help="print the version of robopianist.",
-    )
-
-    parser.add_argument(
-        "--download-soundfonts",
-        action="store_true",
-        help="download additional soundfonts.",
-    )
-
-    parser.add_argument(
-        "--check-pig-exists",
-        action="store_true",
-        help="check that the PIG dataset was properly downloaded and processed.",
-    )
-
-    subparsers = parser.add_subparsers(dest="subparser_name", help="sub-command help")
-
-    player_parser = subparsers.add_parser("player")
-    player_parser.add_argument("--midi-file", default=None, help="MIDI file to play.")
-    player_parser.add_argument(
-        "--stretch", default=1.0, help="Stretch the MIDI file by this factor."
-    )
-    player_parser.add_argument(
-        "--shift", default=0, help="Shift the MIDI file by this many semitones."
-    )
-
-    preprocess_parser = subparsers.add_parser("preprocess")
-    preprocess_parser.add_argument(
-        "--dataset-dir",
-        required=True,
-        help="Where the PIG dataset is located.",
-    )
-    preprocess_parser.add_argument(
-        "--save-dir",
-        required=False,
-        default=str(_DEFAULT_SAVE_DIR),
-        help="Where to save the processed proto files.",
-    )
-
-    args = parser.parse_args()
-
-    if args.version:
-        print(f"robopianist {robopianist.__version__}")
-        return
-
-    if args.download_soundfonts:
-        # Download soundfonts.
-        script = robopianist._PROJECT_ROOT / "scripts" / "get_soundfonts.sh"
-        subprocess.run(["bash", str(script)], check=True)
-
-        # Copy soundfonts to robopianist directory.
-        dst_dir = robopianist._PROJECT_ROOT / "robopianist" / "soundfonts"
-        dst_dir.mkdir(parents=True, exist_ok=True)
-        src_dir = robopianist._PROJECT_ROOT / "third_party" / "soundfonts"
-        for file in src_dir.glob("*.sf2"):
-            shutil.copy(file, dst_dir / file.name)
-
-        return
-
-    if args.check_pig_exists:
-        from robopianist import music
-
-        if len(music.PIG_MIDIS) != 150:
-            raise ValueError("PIG dataset was not properly downloaded and processed.")
-        else:
-            print("PIG dataset is ready to use!")
-        return
-
-    if args.subparser_name == "player":
-        if args.midi_file is not None:
-            from robopianist import music
-
-            music.load(args.midi_file, stretch=args.stretch, shift=args.shift).play()
-        else:
-            player_parser.print_help()
-
-        return
-
-    if args.subparser_name == "preprocess":
-        _preprocess_pig(Path(args.dataset_dir), Path(args.save_dir))
-        return

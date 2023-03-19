@@ -11,16 +11,6 @@
     * Creator: Alexander Holm
     * License: Public Domain (as of 4/3/2022)
     * Size: 1.27 GB
-3. `FluidR3_GM.sf2`
-    * [Download Link](https://member.keymusician.com/Member/FluidR3_GM/index.html)
-    * Creator: Frank Wen
-    * License: MIT
-    * Size: 148.4 MB
-4. `MuseScore_General.sf2`
-    * [Download Link](https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General.sf2)
-    * Creator: MuseScore
-    * License: MIT
-    * Size: 215.6 MB
 
 ## Links
 
