@@ -1,11 +1,14 @@
 # RoboPianist: A Benchmark for High-Dimensional Robot Control
 
 [![build][tests-badge]][tests]
+[![docs][docs-badge]][docs]
 [![PyPI Python Version][pypi-versions-badge]][pypi]
 [![PyPI version][pypi-badge]][pypi]
 
 [tests-badge]: https://github.com/google-research/robopianist/actions/workflows/ci.yml/badge.svg
+[docs-badge]: https://github.com/google-research/robopianist/actions/workflows/docs.yml/badge.svg
 [tests]: https://github.com/google-research/robopianist/actions/workflows/ci.yml
+[docs]: https://google-research.github.io/robopianist/
 [pypi-versions-badge]: https://img.shields.io/pypi/pyversions/robopianist
 [pypi-badge]: https://badge.fury.io/py/robopianist.svg
 [pypi]: https://pypi.org/project/robopianist/
