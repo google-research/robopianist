@@ -40,11 +40,11 @@ core_requirements = [
     "mujoco_utils>=0.0.5",
     "note_seq>=0.0.5",
     "pretty_midi>=0.2.10",
-    "pyaudio >= 0.2.12",
-    "pyfluidsynth >= 1.3.2",
+    "pyaudio>=0.2.12",
+    "pyfluidsynth>=1.3.2",
     "scikit-learn",
-    "termcolor>=2.2.0",
-    "tqdm>=4.65.0",
+    "termcolor",
+    "tqdm",
 ]
 
 test_requirements = [

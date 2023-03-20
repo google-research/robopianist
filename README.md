@@ -86,21 +86,21 @@ pip install --upgrade robopianist
 
 ### Optional: Download additional soundfonts
 
-We recommend you install additional soundfonts to improve the quality of the synthesized audio. The RoboPianist [CLI](#cli) can be used to list out all available soundfonts, change the default soundfont, and download additional ones. To list out all available commands, run:
+We recommend installing additional soundfonts to improve the quality of the synthesized audio. You can easily do this using the RoboPianist CLI:
 
 ```bash
-robopianist soundfont --help
+robopianist soundfont --download
 ```
 
-For more information, see [docs/soundfonts.md](docs/soundfonts.md).
+For more soundfont-related commands, see [docs/soundfonts.md](docs/soundfonts.md).
 
 ## MIDI Dataset
 
-The PIG dataset cannot be redistributed on GitHub due to licensing restrictions. See [docs/dataset](docs/dataset.md) for instructions on where to download and how to process the
+The PIG dataset cannot be redistributed on GitHub due to licensing restrictions. See [docs/dataset](docs/dataset.md) for instructions on where to download it and how to preprocess it.
 
 ## CLI
 
-RoboPianist comes with a command line interface (CLI) that can be used to download additional soundfonts, play MIDI files, preprocess the PIG dataset, and more. To see a list of available commands, run `robopianist --help`.
+RoboPianist comes with a command line interface (CLI) that can be used to download additional soundfonts, play MIDI files, preprocess the PIG dataset, and more. For more information, see [docs/cli.md](docs/cli.md).
 
 ## Contributing
 
