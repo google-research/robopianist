@@ -4,9 +4,11 @@ on:
   push:
     paths-ignore:
       - "tutorial.ipynb"
+      - "docs/**"
   pull_request:
     paths-ignore:
       - "tutorial.ipynb"
+      - "docs/**"
 
 jobs:
   run-robopianist-tests:
