@@ -44,15 +44,11 @@ class Stage(composer_utils.Arena):
         )
 
         # Disc-shaped ground plane.
-        self._ground_material = self._mjcf_root.asset.add(
-            "material", name="groundplane"
-        )
         self._ground_geom = self._mjcf_root.worldbody.add(
             "geom",
             type="cylinder",
             size=_STAGE_SIZE,
             rgba=_STAGE_COLOR,
-            material=self._ground_material,
             contype=0,
             conaffinity=0,
         )
