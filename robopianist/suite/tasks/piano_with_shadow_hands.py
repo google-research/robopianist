@@ -56,6 +56,7 @@ class PianoWithShadowHands(base.PianoTask):
         disable_colorization: bool = False,
         disable_hand_collisions: bool = False,
         augmentations: Optional[Sequence[base_variation.Variation]] = None,
+        energy_penalty_coef: float = _ENERGY_PENALTY_COEF,
         **kwargs,
     ) -> None:
         """Task constructor.
@@ -84,6 +85,7 @@ class PianoWithShadowHands(base.PianoTask):
             augmentations: A list of `Variation` objects that will be applied to the
                 MIDI file at the beginning of each episode. If None, no augmentations
                 will be applied.
+            energy_penalty_coef: Coefficient for the energy penalty.
         """
         super().__init__(arena=stage.Stage(), **kwargs)
 
@@ -104,6 +106,7 @@ class PianoWithShadowHands(base.PianoTask):
         self._disable_colorization = disable_colorization
         self._disable_hand_collisions = disable_hand_collisions
         self._augmentations = augmentations
+        self._energy_penalty_coef = energy_penalty_coef
 
         if not disable_fingering_reward and not disable_colorization:
             self._colorize_fingertips()
@@ -257,7 +260,7 @@ class PianoWithShadowHands(base.PianoTask):
         rew = 0.0
         for hand in [self.right_hand, self.left_hand]:
             power = hand.observables.actuators_power(physics).copy()
-            rew -= _ENERGY_PENALTY_COEF * np.sum(power)
+            rew -= self._energy_penalty_coef * np.sum(power)
         return rew
 
     def _compute_key_press_reward(self, physics: mjcf.Physics) -> float:
