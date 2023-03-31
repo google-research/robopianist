@@ -16,9 +16,6 @@
 
 from mujoco_utils import composer_utils
 
-_STAGE_SIZE = (0.65, 0.001)  # Cylinder radius, half-height.
-_STAGE_COLOR = (0.1, 0.1, 0.1, 0.8)
-
 
 class Stage(composer_utils.Arena):
     """A custom arena with a ground plane, lights and a starry night sky."""
@@ -43,12 +40,30 @@ class Stage(composer_utils.Arena):
             "light", pos=(0.3, 0, 1), dir=(0, 0, -1), directional=False
         )
 
-        # Disc-shaped ground plane.
+        # Dark checkerboard floor.
+        self._mjcf_root.asset.add(
+            "texture",
+            name="grid",
+            type="2d",
+            builtin="checker",
+            width=512,
+            height=512,
+            rgb1=[0.1, 0.1, 0.1],
+            rgb2=[0.2, 0.2, 0.2],
+        )
+        self._mjcf_root.asset.add(
+            "material",
+            name="grid",
+            texture="grid",
+            texrepeat=(1, 1),
+            texuniform=True,
+            reflectance=0.2,
+        )
         self._ground_geom = self._mjcf_root.worldbody.add(
             "geom",
-            type="cylinder",
-            size=_STAGE_SIZE,
-            rgba=_STAGE_COLOR,
+            type="plane",
+            size=(1, 1, 0.05),
+            material="grid",
             contype=0,
             conaffinity=0,
         )

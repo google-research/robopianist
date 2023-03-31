@@ -14,6 +14,8 @@
 
 """Base piano composer task."""
 
+from typing import Sequence
+
 import mujoco
 import numpy as np
 from dm_control import composer
@@ -99,6 +101,7 @@ class PianoTask(PianoOnlyTask):
         primitive_fingertip_collisions: bool = False,
         reduced_action_space: bool = False,
         attachment_yaw: float = _ATTACHMENT_YAW,
+        forearm_dofs: Sequence[str] = shadow_hand._DEFAULT_FOREARM_DOFS,
         physics_timestep: float = _PHYSICS_TIMESTEP,
         control_timestep: float = _CONTROL_TIMESTEP,
     ) -> None:
@@ -118,6 +121,7 @@ class PianoTask(PianoOnlyTask):
             primitive_fingertip_collisions=primitive_fingertip_collisions,
             reduced_action_space=reduced_action_space,
             attachment_yaw=attachment_yaw,
+            forearm_dofs=forearm_dofs,
         )
         self._right_hand = self._add_hand(
             hand_side=HandSide.RIGHT,
@@ -127,6 +131,7 @@ class PianoTask(PianoOnlyTask):
             primitive_fingertip_collisions=primitive_fingertip_collisions,
             reduced_action_space=reduced_action_space,
             attachment_yaw=attachment_yaw,
+            forearm_dofs=forearm_dofs,
         )
 
     # Accessors.
@@ -150,6 +155,7 @@ class PianoTask(PianoOnlyTask):
         primitive_fingertip_collisions: bool,
         reduced_action_space: bool,
         attachment_yaw: float,
+        forearm_dofs: Sequence[str],
     ) -> shadow_hand.ShadowHand:
         joint_range = [-self._piano.size[1], self._piano.size[1]]
 
@@ -162,6 +168,7 @@ class PianoTask(PianoOnlyTask):
             primitive_fingertip_collisions=primitive_fingertip_collisions,
             restrict_wrist_yaw_range=False,
             reduced_action_space=reduced_action_space,
+            forearm_dofs=forearm_dofs,
         )
         hand.root_body.pos = position
 

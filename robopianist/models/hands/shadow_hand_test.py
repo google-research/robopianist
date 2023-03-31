@@ -45,7 +45,6 @@ class ShadowHandTest(parameterized.TestCase):
         side=[base_hand.HandSide.RIGHT, base_hand.HandSide.LEFT],
         primitive_fingertip_collisions=[False, True],
         restrict_yaw_range=[False, True],
-        add_dofs=[False, True],
         reduced_action_space=[False, True],
     )
     def test_compiles_and_steps(
@@ -53,14 +52,12 @@ class ShadowHandTest(parameterized.TestCase):
         side: base_hand.HandSide,
         primitive_fingertip_collisions: bool,
         restrict_yaw_range: bool,
-        add_dofs: bool,
         reduced_action_space: bool,
     ) -> None:
         robot = shadow_hand.ShadowHand(
             side=side,
             primitive_fingertip_collisions=primitive_fingertip_collisions,
             restrict_wrist_yaw_range=restrict_yaw_range,
-            add_dofs=add_dofs,
             reduced_action_space=reduced_action_space,
         )
         physics = mjcf.Physics.from_mjcf_model(robot.mjcf_model)
@@ -77,41 +74,32 @@ class ShadowHandTest(parameterized.TestCase):
         robot = shadow_hand.ShadowHand(side=HandSide.LEFT)
         self.assertEqual(robot.name, "lh_shadow_hand")
 
-    @parameterized.named_parameters(
-        {"testcase_name": "add_dofs", "add_dofs": True},
-        {"testcase_name": "no_add_dofs", "add_dofs": False},
-    )
-    def test_joints(self, add_dofs: bool) -> None:
-        robot = shadow_hand.ShadowHand(add_dofs=add_dofs)
+    def test_raises_value_error_on_invalid_forearm_dofs(self) -> None:
+        with self.assertRaises(ValueError):
+            shadow_hand.ShadowHand(forearm_dofs=("invalid",))
+
+    def test_joints(self) -> None:
+        robot = shadow_hand.ShadowHand()
         for joint in robot.joints:
             self.assertEqual(joint.tag, "joint")
-        expected_dofs = consts.NQ
-        if add_dofs:
-            expected_dofs += robot.n_forearm_dofs
+        expected_dofs = consts.NQ + robot.n_forearm_dofs
         self.assertLen(robot.joints, expected_dofs)
 
     @parameterized.named_parameters(
-        {"testcase_name": "add_dofs", "add_dofs": True},
-        {"testcase_name": "no_add_dofs", "add_dofs": False},
+        {"testcase_name": "full_action_space", "reduced_action_space": False},
+        {"testcase_name": "reduced_action_space", "reduced_action_space": True},
     )
-    def test_actuators(self, add_dofs: bool) -> None:
-        robot = shadow_hand.ShadowHand(add_dofs=add_dofs)
+    def test_actuators(self, reduced_action_space: bool) -> None:
+        robot = shadow_hand.ShadowHand(reduced_action_space=reduced_action_space)
         for actuator in robot.actuators:
             self.assertEqual(actuator.tag, "position")
-        expected_acts = consts.NU
-        if add_dofs:
-            expected_acts += robot.n_forearm_dofs
+        expected_acts = consts.NU + robot.n_forearm_dofs
+        if reduced_action_space:
+            expected_acts -= len(shadow_hand._REDUCED_ACTION_SPACE_EXCLUDED_DOFS)
         self.assertLen(robot.actuators, expected_acts)
 
-    def test_reduced_action_space(self) -> None:
-        robot = shadow_hand.ShadowHand(reduced_action_space=True, add_dofs=False)
-        self.assertLen(
-            robot.actuators,
-            consts.NU - len(shadow_hand._REDUCED_ACTION_SPACE_EXCLUDED_DOFS),
-        )
-
     def test_restrict_wrist_yaw_range(self) -> None:
-        robot = shadow_hand.ShadowHand(restrict_wrist_yaw_range=True, add_dofs=False)
+        robot = shadow_hand.ShadowHand(restrict_wrist_yaw_range=True)
         physics = mjcf.Physics.from_mjcf_model(robot.mjcf_model)
         jnt_range = physics.bind(robot.joints[0]).range  # W2 is the first joint.
         self.assertEqual(jnt_range[0], -0.174533)
