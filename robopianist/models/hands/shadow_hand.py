@@ -72,13 +72,8 @@ _RESTRICTED_WRJ2_RANGE: Tuple[float, float] = (-0.174533, 0.174533)
 
 _REDUCED_ACTION_SPACE_EXCLUDED_DOFS: Tuple[str, ...] = (
     "A_THJ5",
-    "A_THJ3",
     "A_THJ1",
-    "A_FFJ4",
-    "A_MFJ4",
-    "A_RFJ4",
     "A_LFJ5",
-    "A_LFJ4",
 )
 
 _REDUCED_THUMB_RANGE: Tuple[float, float] = (0.0, 0.698132)
@@ -165,11 +160,14 @@ class ShadowHand(base.Hand):
         joints = mjcf_utils.safe_find_all(self._mjcf_root, "joint")
         actuators = mjcf_utils.safe_find_all(self._mjcf_root, "actuator")
         if self._reduce_action_space:
-            # Disable some actuators (keeping the joints).
+            # Disable some actuators.
             for act_name in _REDUCED_ACTION_SPACE_EXCLUDED_DOFS:
                 act = [a for a in actuators if a.name == self._prefix + act_name][0]
                 actuators.remove(act)
                 act.remove()
+                jnt = [j for j in joints if j.name == self._prefix + act_name[2:]][0]
+                joints.remove(jnt)
+                jnt.remove()
             # Reduce THJ2 range.
             joint = mjcf_utils.safe_find(
                 self._mjcf_root, "joint", self._prefix + "THJ2"
@@ -355,20 +353,6 @@ class ShadowHand(base.Hand):
     ) -> None:
         del random_state  # Unused.
         physics.bind(self.actuators).ctrl = action
-
-    def initialize_episode(
-        self, physics: mjcf.Physics, random_state: np.random.RandomState
-    ) -> None:
-        del random_state  # Unused.
-        if self._reduce_action_space:
-            physics.bind([self.joints[i] for i in self._disabled_idxs]).qpos = 0.0
-
-    def after_step(
-        self, physics: mjcf.Physics, random_state: np.random.RandomState
-    ) -> None:
-        del random_state  # Unused.
-        if self._reduce_action_space:
-            physics.bind([self.joints[i] for i in self._disabled_idxs]).qpos = 0.0
 
 
 class ShadowHandObservables(base.HandObservables):

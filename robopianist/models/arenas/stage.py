@@ -29,7 +29,6 @@ class Stage(composer_utils.Arena):
         getattr(self._mjcf_root.visual, "global").azimuth = 180
         getattr(self._mjcf_root.visual, "global").elevation = -50
 
-        self._mjcf_root.visual.map.stiffness = 400
         self._mjcf_root.visual.scale.forcewidth = 0.04
         self._mjcf_root.visual.scale.contactwidth = 0.2
         self._mjcf_root.visual.scale.contactheight = 0.03

@@ -113,20 +113,20 @@ class PianoTask(PianoOnlyTask):
             control_timestep=control_timestep,
         )
 
-        self._left_hand = self._add_hand(
-            hand_side=HandSide.LEFT,
-            position=_LEFT_HAND_POSITION,
-            quaternion=_LEFT_HAND_QUATERNION,
+        self._right_hand = self._add_hand(
+            hand_side=HandSide.RIGHT,
+            position=_RIGHT_HAND_POSITION,
+            quaternion=_RIGHT_HAND_QUATERNION,
             gravity_compensation=gravity_compensation,
             primitive_fingertip_collisions=primitive_fingertip_collisions,
             reduced_action_space=reduced_action_space,
             attachment_yaw=attachment_yaw,
             forearm_dofs=forearm_dofs,
         )
-        self._right_hand = self._add_hand(
-            hand_side=HandSide.RIGHT,
-            position=_RIGHT_HAND_POSITION,
-            quaternion=_RIGHT_HAND_QUATERNION,
+        self._left_hand = self._add_hand(
+            hand_side=HandSide.LEFT,
+            position=_LEFT_HAND_POSITION,
+            quaternion=_LEFT_HAND_QUATERNION,
             gravity_compensation=gravity_compensation,
             primitive_fingertip_collisions=primitive_fingertip_collisions,
             reduced_action_space=reduced_action_space,
