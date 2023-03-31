@@ -20,13 +20,14 @@ from absl import app, flags
 from dm_control.mjcf import export_with_assets
 from dm_env_wrappers import CanonicalSpecWrapper
 from mujoco import viewer as mujoco_viewer
-from mujoco_utils import composer_utils
 
-from robopianist import music, viewer
-from robopianist.suite.tasks import piano_with_shadow_hands
+from robopianist import suite, viewer
 from robopianist.wrappers import PianoSoundVideoWrapper
 
-_FILE = flags.DEFINE_string("file", "TwinkleTwinkleRousseau", "")
+_ENV_NAME = flags.DEFINE_string(
+    "env_name", "RoboPianist-debug-TwinkleTwinkleLittleStar-v0", ""
+)
+_MIDI_FILE = flags.DEFINE_string("midi_file", None, "")
 _CONTROL_TIMESTEP = flags.DEFINE_float("control_timestep", 0.05, "")
 _STRETCH = flags.DEFINE_float("stretch", 1.0, "")
 _SHIFT = flags.DEFINE_integer("shift", 0, "")
@@ -54,24 +55,30 @@ _ACTION_SEQUENCE = flags.DEFINE_string(
 
 
 def main(_) -> None:
-    task = piano_with_shadow_hands.PianoWithShadowHands(
-        change_color_on_activation=True,
-        midi=music.load(_FILE.value, stretch=_STRETCH.value, shift=_SHIFT.value),
-        trim_silence=_TRIM_SILENCE.value,
-        control_timestep=_CONTROL_TIMESTEP.value,
-        gravity_compensation=_GRAVITY_COMPENSATION.value,
-        primitive_fingertip_collisions=_PRIMITIVE_FINGERTIP_COLLISIONS.value,
-        reduced_action_space=_REDUCED_ACTION_SPACE.value,
-        n_steps_lookahead=_N_STEPS_LOOKAHEAD.value,
-        disable_fingering_reward=_DISABLE_FINGERING_REWARD.value,
-        disable_forearm_reward=_DISABLE_FOREARM_REWARD.value,
-        disable_colorization=_DISABLE_COLORIZATION.value,
-        disable_hand_collisions=_DISABLE_HAND_COLLISIONS.value,
-        attachment_yaw=_ATTACHMENT_YAW.value,
+    env = suite.load(
+        environment_name=_ENV_NAME.value,
+        midi_file=_MIDI_FILE.value,
+        stretch=_STRETCH.value,
+        shift=_SHIFT.value,
+        task_kwargs=dict(
+            change_color_on_activation=True,
+            trim_silence=_TRIM_SILENCE.value,
+            control_timestep=_CONTROL_TIMESTEP.value,
+            gravity_compensation=_GRAVITY_COMPENSATION.value,
+            primitive_fingertip_collisions=_PRIMITIVE_FINGERTIP_COLLISIONS.value,
+            reduced_action_space=_REDUCED_ACTION_SPACE.value,
+            n_steps_lookahead=_N_STEPS_LOOKAHEAD.value,
+            disable_fingering_reward=_DISABLE_FINGERING_REWARD.value,
+            disable_forearm_reward=_DISABLE_FOREARM_REWARD.value,
+            disable_colorization=_DISABLE_COLORIZATION.value,
+            disable_hand_collisions=_DISABLE_HAND_COLLISIONS.value,
+            attachment_yaw=_ATTACHMENT_YAW.value,
+        ),
     )
+
     if _EXPORT.value:
         export_with_assets(
-            task.root_entity.mjcf_model,
+            env.task.root_entity.mjcf_model,
             out_dir="/tmp/robopianist/piano_with_shadow_hands",
             out_file_name="scene.xml",
         )
@@ -80,9 +87,6 @@ def main(_) -> None:
         )
         return
 
-    env = composer_utils.Environment(
-        task=task, strip_singleton_obs_buffer_dim=True, recompile_physics=False
-    )
     if _RECORD.value:
         env = PianoSoundVideoWrapper(env, record_every=1)
     if _CANONICALIZE.value:

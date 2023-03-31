@@ -15,7 +15,7 @@
 """RoboPianist suite."""
 
 from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 from dm_control import composer
 from mujoco_utils import composer_utils
@@ -54,7 +54,8 @@ def load(
     stretch: float = 1.0,
     shift: int = 0,
     recompile_physics: bool = False,
-    **task_kwargs,
+    legacy_step: bool = True,
+    task_kwargs: Optional[Dict[str, Any]] = None,
 ) -> composer.Environment:
     """Loads a RoboPianist environment.
 
@@ -68,7 +69,8 @@ def load(
         stretch: Stretch factor for the MIDI file.
         shift: Shift factor for the MIDI file.
         recompile_physics: Whether to recompile the physics.
-        **task_kwargs: Additional keyword arguments to pass to the task.
+        legacy_step: Whether to use the legacy step function.
+        task_kwargs: Additional keyword arguments to pass to the task.
     """
     if midi_file is not None:
         midi = music.load(midi_file, stretch=stretch, shift=shift)
@@ -80,11 +82,14 @@ def load(
             )
         midi = music.load(_ALL_DICT[environment_name], stretch=stretch, shift=shift)
 
+    task_kwargs = task_kwargs or {}
+
     return composer_utils.Environment(
         task=piano_with_shadow_hands.PianoWithShadowHands(midi=midi, **task_kwargs),
         random_state=seed,
         strip_singleton_obs_buffer_dim=True,
         recompile_physics=recompile_physics,
+        legacy_step=legacy_step,
     )
 
 
