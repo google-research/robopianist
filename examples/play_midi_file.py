@@ -15,7 +15,7 @@
 """Play a MIDI file using FluidSynth and PyAudio.
 
 Example usage:
-    python examples/play_midi_file.py --file robopianist/music/data/nocturne.mid
+    python examples/play_midi_file.py --file robopianist/music/data/rousseau/nocturne-trimmed.mid
 """
 
 from absl import app, flags

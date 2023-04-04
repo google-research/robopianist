@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Save a programatically generated NoteSequence to a MIDI file.
+"""Save a programmatically generated NoteSequence to a MIDI file.
 
 Example usage:
-    python examples/midi_data_to_file.py --name c_major_scale --save_path /tmp/c_major_scale.mid
+    python examples/midi_data_to_file.py --name CMajorScaleTwoHands --save_path /tmp/c_major_scale_two_hands.mid
 """
 
 from absl import app, flags
