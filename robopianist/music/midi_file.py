@@ -231,7 +231,7 @@ class MidiFile:
     def synthesize(self, sampling_rate: int = consts.SAMPLING_RATE) -> np.ndarray:
         """Synthesize the MIDI file into a waveform using FluidSynth."""
         return midi_synth.fluidsynth(
-            self.seq, sample_rate=sampling_rate, sf2_path=str(SF2_PATH)
+            self.seq, sample_rate=float(sampling_rate), sf2_path=str(SF2_PATH)
         )
 
     def play(self, sampling_rate: int = consts.SAMPLING_RATE) -> None:
