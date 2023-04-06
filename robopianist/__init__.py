@@ -14,7 +14,7 @@
 
 from pathlib import Path
 
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 # Path to the root of the project.
 _PROJECT_ROOT = Path(__file__).parent.parent
