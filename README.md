@@ -13,7 +13,7 @@
 [pypi-badge]: https://badge.fury.io/py/robopianist.svg
 [pypi]: https://pypi.org/project/robopianist/
 
-![RoboPianist teaser image](./docs/teaser1x3.jpeg)
+[![Video](http://img.youtube.com/vi/VBFn_Gg0yD8/hqdefault.jpg)](https://youtu.be/VBFn_Gg0yD8)
 
 RoboPianist is a new benchmarking suite for high-dimensional control, targeted at testing high spatial and temporal precision, coordination, and planning, all with an underactuated system frequently making-and-breaking contacts. The proposed challenge is *mastering the piano* through bi-manual dexterity, using a pair of simulated anthropomorphic robot hands.
 
