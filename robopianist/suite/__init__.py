@@ -15,7 +15,7 @@
 """RoboPianist suite."""
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Mapping, Optional, Union
 
 from dm_control import composer
 from mujoco_utils import composer_utils
@@ -55,7 +55,7 @@ def load(
     shift: int = 0,
     recompile_physics: bool = False,
     legacy_step: bool = True,
-    task_kwargs: Optional[Dict[str, Any]] = None,
+    task_kwargs: Optional[Mapping[str, Any]] = None,
 ) -> composer.Environment:
     """Loads a RoboPianist environment.
 

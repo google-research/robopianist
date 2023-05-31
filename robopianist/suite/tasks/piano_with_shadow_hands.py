@@ -41,6 +41,9 @@ _ENERGY_PENALTY_COEF = 5e-3
 # Transparency of fingertip geoms.
 _FINGERTIP_ALPHA = 1.0
 
+# Bounds for the uniform distribution from which initial hand offset is sampled.
+_POSITION_OFFSET = 0.05
+
 
 class PianoWithShadowHands(base.PianoTask):
     def __init__(
@@ -156,9 +159,19 @@ class PianoWithShadowHands(base.PianoTask):
     def initialize_episode(
         self, physics: mjcf.Physics, random_state: np.random.RandomState
     ) -> None:
-        del physics  # Unused.
         self._maybe_change_midi(random_state)
         self._reset_quantities_at_episode_init()
+        self._randomize_hand_positions(physics, random_state)
+
+    def _randomize_hand_positions(
+        self, physics: mjcf.Physics, random_state: np.random.RandomState
+    ) -> None:
+        offset = random_state.uniform(low=-_POSITION_OFFSET, high=_POSITION_OFFSET)
+        for hand in [self.right_hand, self.left_hand]:
+            pos, quat = hand.get_pose(physics)
+            new_pos = pos.copy()
+            new_pos[1] += offset
+            hand.set_pose(physics, new_pos, quat)
 
     def before_step(
         self,
