@@ -60,6 +60,7 @@ class PianoWithShadowHands(base.PianoTask):
         disable_hand_collisions: bool = False,
         augmentations: Optional[Sequence[base_variation.Variation]] = None,
         energy_penalty_coef: float = _ENERGY_PENALTY_COEF,
+        randomize_hand_positions: bool = False,
         **kwargs,
     ) -> None:
         """Task constructor.
@@ -89,6 +90,8 @@ class PianoWithShadowHands(base.PianoTask):
                 MIDI file at the beginning of each episode. If None, no augmentations
                 will be applied.
             energy_penalty_coef: Coefficient for the energy penalty.
+            randomize_hand_positions: If True, randomizes the initial position of the
+                hands at the beginning of each episode.
         """
         super().__init__(arena=stage.Stage(), **kwargs)
 
@@ -110,6 +113,7 @@ class PianoWithShadowHands(base.PianoTask):
         self._disable_hand_collisions = disable_hand_collisions
         self._augmentations = augmentations
         self._energy_penalty_coef = energy_penalty_coef
+        self._randomize_hand_positions = randomize_hand_positions
 
         if not disable_fingering_reward and not disable_colorization:
             self._colorize_fingertips()
@@ -161,17 +165,7 @@ class PianoWithShadowHands(base.PianoTask):
     ) -> None:
         self._maybe_change_midi(random_state)
         self._reset_quantities_at_episode_init()
-        self._randomize_hand_positions(physics, random_state)
-
-    def _randomize_hand_positions(
-        self, physics: mjcf.Physics, random_state: np.random.RandomState
-    ) -> None:
-        offset = random_state.uniform(low=-_POSITION_OFFSET, high=_POSITION_OFFSET)
-        for hand in [self.right_hand, self.left_hand]:
-            pos, quat = hand.get_pose(physics)
-            new_pos = pos.copy()
-            new_pos[1] += offset
-            hand.set_pose(physics, new_pos, quat)
+        self._randomize_initial_hand_positions(physics, random_state)
 
     def before_step(
         self,
@@ -446,3 +440,13 @@ class PianoWithShadowHands(base.PianoTask):
                     continue
                 geom.conaffinity = 0
                 geom.contype = 1
+
+    def _randomize_initial_hand_positions(
+        self, physics: mjcf.Physics, random_state: np.random.RandomState
+    ) -> None:
+        """Randomize the initial position of the hands."""
+        if not self._randomize_hand_positions:
+            return
+        offset = random_state.uniform(low=-_POSITION_OFFSET, high=_POSITION_OFFSET)
+        for hand in [self.right_hand, self.left_hand]:
+            hand.shift_pose(physics, (0, offset, 0))
