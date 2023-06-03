@@ -116,10 +116,10 @@ See [docs/faq.md](docs/faq.md) for a list of frequently asked questions.
 If you use RoboPianist in your work, please use the following citation:
 
 ```bibtex
-@software{zakka2023robopianist,
+@article{zakka2023robopianist,
   author = {Zakka, Kevin and Smith, Laura and Gileadi, Nimrod and Howell, Taylor and Peng, Xue Bin and Singh, Sumeet and Tassa, Yuval and Florence, Pete and Zeng, Andy and Abbeel, Pieter},
   title = {{RoboPianist: A Benchmark for High-Dimensional Robot Control}},
-  url = {https://github.com/google-research/robopianist},
+  journal = {arXiv preprint arXiv:2304.04150},
   year = {2023},
 }
 ```

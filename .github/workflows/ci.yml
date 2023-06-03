@@ -5,10 +5,12 @@ on:
     paths-ignore:
       - "tutorial.ipynb"
       - "docs/**"
+      - "**/README.md"
   pull_request:
     paths-ignore:
       - "tutorial.ipynb"
       - "docs/**"
+      - "**/README.md"
 
 jobs:
   run-robopianist-tests:
