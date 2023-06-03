@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["python:3.10"]
+        python-version: ["python:3.11"]
     steps:
       - name: Checkout robopianist
         uses: actions/checkout@v3
