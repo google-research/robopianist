@@ -40,9 +40,7 @@ We've created an introductory [Colab](https://colab.research.google.com/github/g
 
 ## Installation
 
-RoboPianist is supported on both Linux and macOS and can be installed with Python 3.8 up to 3.10. We recommend using [Miniconda](https://docs.conda.io/en/latest/miniconda.html) to manage your Python environment.
-
-**3.11 will be supported once the numba team resolves [#8304](https://github.com/numba/numba/issues/8304).**
+RoboPianist is supported on both Linux and macOS and can be installed with Python >= 3.8. We recommend using [Miniconda](https://docs.conda.io/en/latest/miniconda.html) to manage your Python environment.
 
 ### Install from source
 

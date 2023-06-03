@@ -68,6 +68,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
@@ -94,7 +95,7 @@ setup(
     license="Apache License 2.0",
     license_files=("LICENSE",),
     packages=find_packages(exclude=["examples"]),
-    python_requires=">=3.8, <3.11",
+    python_requires=">=3.8",
     install_requires=core_requirements,
     include_package_data=True,
     classifiers=classifiers,

@@ -288,7 +288,7 @@ class PianoWithShadowHands(base.PianoTask):
             rew += 0.5 * rews.mean()
         # If there are any false positives, the remaining 0.5 reward is lost.
         off = np.flatnonzero(1 - self._goal_current[:-1])
-        rew += 0.5 * (1 - self.piano.activation[off].any())
+        rew += 0.5 * (1 - float(self.piano.activation[off].any()))
         return rew
 
     def _compute_fingering_reward(self, physics: mjcf.Physics) -> float:

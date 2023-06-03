@@ -234,7 +234,9 @@ class TimeSeries:
             sequences of floats. Will be used to annotate the legend.
     """
 
-    data: Deque[Union[float, Sequence[float]]] = deque(maxlen=mujoco.mjMAXLINE)
+    data: Deque[Union[float, Sequence[float]]] = field(
+        default_factory=lambda: deque(maxlen=mujoco.mjMAXLINE)
+    )
     linename: List[str] = field(default_factory=list)
 
     def add(self, value: float) -> None:
