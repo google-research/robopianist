@@ -70,7 +70,10 @@ _PREV_LABELING_MODE = (user_input.KEY_F7, user_input.MOD_SHIFT)
 _NEXT_LABELING_MODE = user_input.KEY_F7
 _PRINT_CAMERA = user_input.KEY_F11
 _VISUALIZATION_FLAGS = user_input.Range(
-    [ord(functions.mjVISSTRING[i][2]) for i in range(0, mujoco.mjtVisFlag.mjNVISFLAG)]
+    [
+        ord(functions.mjVISSTRING[i][2]) if functions.mjVISSTRING[i][2] else 0
+        for i in range(0, mujoco.mjtVisFlag.mjNVISFLAG)
+    ]
 )
 _GEOM_GROUPS = user_input.Range(
     [i + ord("0") for i in range(min(_NUM_GROUP_KEYS, mujoco.mjNGROUP))]
