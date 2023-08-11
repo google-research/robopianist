@@ -19,6 +19,7 @@ RoboPianist is a new benchmarking suite for high-dimensional control, targeted a
 
 This codebase contains software and tasks for the benchmark, and is powered by [MuJoCo](https://mujoco.org/).
 
+- [Latest Updates](#latest-updates)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
   - [Install from source](#install-from-source)
@@ -31,6 +32,14 @@ This codebase contains software and tasks for the benchmark, and is powered by [
 - [Citing RoboPianist](#citing-robopianist)
 - [Acknowledgements](#acknowledgements)
 - [License and Disclaimer](#license-and-disclaimer)
+
+-------
+
+## Latest Updates
+
+- [11/08/2023] Code to train the model-free RL policies is now public, see [robopianist-rl](https://github.com/kevinzakka/robopianist-rl).
+
+-------
 
 ## Getting Started
 
