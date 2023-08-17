@@ -91,7 +91,7 @@ class PianoWithShadowHandsTest(parameterized.TestCase):
         # Hand observables.
         for name in ["rh_shadow_hand", "lh_shadow_hand"]:
             self.assertIn(f"{name}/joints_pos", timestep.observation)
-            self.assertIn(f"{name}/position", timestep.observation)
+            # self.assertIn(f"{name}/position", timestep.observation)
 
     def test_action_spec(self) -> None:
         env = _get_env()

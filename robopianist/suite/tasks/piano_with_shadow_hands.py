@@ -371,7 +371,10 @@ class PianoWithShadowHands(base.PianoTask):
         # Enable hand observables.
         enabled_observables = [
             "joints_pos",
-            "position",
+            # NOTE(kevin): This observable was previously enabled but it is redundant
+            # since it is encoded in the joint positions, specifically via the forearm
+            # slider joints (which are in units of meters).
+            # "position",
         ]
         for hand in [self.right_hand, self.left_hand]:
             for obs in enabled_observables:
