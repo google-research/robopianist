@@ -71,7 +71,8 @@ class PianoWithShadowHands(base.PianoTask):
                 goal state.
             n_seconds_lookahead: Number of seconds to look ahead when computing the
                 goal state. If specified, this will override `n_steps_lookahead`.
-            trim_silence: If True, remove initial and final timesteps without any notes.
+            trim_silence: If True, shifts the MIDI file so that the first note starts
+                at time 0.
             wrong_press_termination: If True, terminates the episode if the hands press
                 the wrong keys at any timestep.
             initial_buffer_time: Specifies the duration of silence in seconds to add to
@@ -95,6 +96,8 @@ class PianoWithShadowHands(base.PianoTask):
         """
         super().__init__(arena=stage.Stage(), **kwargs)
 
+        if trim_silence:
+            midi = midi.trim_silence()
         self._midi = midi
         self._initial_midi = midi
         self._n_steps_lookahead = n_steps_lookahead
@@ -102,7 +105,6 @@ class PianoWithShadowHands(base.PianoTask):
             self._n_steps_lookahead = int(
                 np.ceil(n_seconds_lookahead / self.control_timestep)
             )
-        self._trim_silence = trim_silence
         self._initial_buffer_time = initial_buffer_time
         self._disable_fingering_reward = (
             disable_fingering_reward or not self._midi.has_fingering()
@@ -152,8 +154,6 @@ class PianoWithShadowHands(base.PianoTask):
         note_traj = midi_file.NoteTrajectory.from_midi(
             self._midi, self.control_timestep
         )
-        if self._trim_silence:
-            note_traj.trim_silence()
         note_traj.add_initial_buffer_time(self._initial_buffer_time)
         self._notes = note_traj.notes
         self._sustains = note_traj.sustains

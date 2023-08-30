@@ -28,7 +28,9 @@ _SHIFT = flags.DEFINE_integer("shift", 0, "Shift the MIDI file by this many semi
 
 
 def main(_) -> None:
-    music.load(_FILE.value, stretch=_STRETCH.value, shift=_SHIFT.value).play()
+    music.load(
+        _FILE.value, stretch=_STRETCH.value, shift=_SHIFT.value
+    ).trim_silence().play()
 
 
 if __name__ == "__main__":

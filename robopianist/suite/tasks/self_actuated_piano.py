@@ -88,7 +88,8 @@ class SelfActuatedPiano(base.PianoOnlyTask):
             midi: A `MidiFile` object.
             n_steps_lookahead: Number of timesteps to look ahead when computing the
                 goal state.
-            trim_silence: If True, remove initial and final timesteps without any notes.
+            trim_silence: If True, shifts the MIDI file so that the first note starts
+                at time 0.
             reward_type: Reward function to use for the key press reward.
             augmentations: A list of `Variation` objects that will be applied to the
                 MIDI file at the beginning of each episode. If None, no augmentations
@@ -96,10 +97,11 @@ class SelfActuatedPiano(base.PianoOnlyTask):
         """
         super().__init__(arena=stage.Stage(), add_piano_actuators=True, **kwargs)
 
+        if trim_silence:
+            midi = midi.trim_silence()
         self._midi = midi
         self._initial_midi = midi
         self._n_steps_lookahead = n_steps_lookahead
-        self._trim_silence = trim_silence
         self._key_press_reward = reward_type.get()
         self._reward_fn = composite_reward.CompositeReward(
             key_press_reward=self._compute_key_press_reward,
@@ -126,8 +128,6 @@ class SelfActuatedPiano(base.PianoOnlyTask):
         note_traj = midi_file.NoteTrajectory.from_midi(
             self._midi, self.control_timestep
         )
-        if self._trim_silence:
-            note_traj.trim_silence()
         self._notes = note_traj.notes
         self._sustains = note_traj.sustains
 

@@ -228,6 +228,14 @@ class MidiFile:
         )
         return MidiFile(seq=seq)
 
+    def trim_silence(self) -> "MidiFile":
+        seq = sequences_lib.extract_subsequence(
+            sequence=self.seq,
+            start_time=self.seq.notes[0].start_time,
+            end_time=self.seq.notes[-1].end_time,
+        )
+        return MidiFile(seq=seq)
+
     def synthesize(self, sampling_rate: int = consts.SAMPLING_RATE) -> np.ndarray:
         """Synthesize the MIDI file into a waveform using FluidSynth."""
         return midi_synth.fluidsynth(
@@ -361,6 +369,11 @@ class NoteTrajectory:
 
         This method modifies the note trajectory in place.
         """
+        print(
+            "WARNING: NoteTrajectory.trim_silence is deprecated. "
+            "Trim the silence at the MIDI level instead."
+        )
+
         # Continue removing from the front until we find a non-empty timestep.
         while len(self.notes) > 0 and len(self.notes[0]) == 0:
             self.notes.pop(0)

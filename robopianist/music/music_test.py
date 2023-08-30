@@ -50,6 +50,18 @@ class LoadTest(parameterized.TestCase):
         """Test that all midis in the library can be loaded."""
         self.assertIsInstance(music.load(midi_name), midi_file.MidiFile)
 
+    @parameterized.parameters(*music.ALL)
+    def test_fingering_available_for_all_timesteps(self, midi_name: str) -> None:
+        """Test that all midis in the library have fingering annotations for all
+        timesteps."""
+        midi = music.load(midi_name).trim_silence()
+        traj = midi_file.NoteTrajectory.from_midi(midi, dt=0.05)
+        for timestep in traj.notes:
+            for note in timestep:
+                # -1 indicates no fingering annotation. Valid fingering lies in [0, 9].
+                self.assertGreater(note.fingering, -1)
+                self.assertLess(note.fingering, 10)
+
 
 if __name__ == "__main__":
     absltest.main()

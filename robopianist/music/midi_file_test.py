@@ -56,6 +56,11 @@ class MidiFileTest(parameterized.TestCase):
         transposed_midi = midi.transpose(0)
         self.assertProtoEquals(transposed_midi.seq, midi.seq)
 
+    def test_trim_silence(self) -> None:
+        midi = music.load("TwinkleTwinkleRousseau")
+        midi_trimmed = midi.trim_silence()
+        self.assertEqual(midi_trimmed.seq.notes[0].start_time, 0.0)
+
 
 class PianoNoteTest(absltest.TestCase):
     def test_constructor(self) -> None:
