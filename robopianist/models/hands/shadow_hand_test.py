@@ -142,6 +142,7 @@ class ShadowHandObservableTest(parameterized.TestCase):
             "actuator_velocity_sensors",
             "actuator_force_sensors",
             "fingertip_sites",
+            "fingertip_touch_sensors",
         ]
     )
     def test_get_element_tuple_property(self, name: str) -> None:
@@ -160,6 +161,7 @@ class ShadowHandObservableTest(parameterized.TestCase):
             "actuators_velocity",
             "actuators_power",
             "position",
+            "fingertip_force",
         ]
     )
     def test_evaluate_observable(self, name: str) -> None:

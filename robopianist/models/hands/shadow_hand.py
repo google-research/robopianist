@@ -183,6 +183,10 @@ class ShadowHand(base.Hand):
         self._joints = tuple(joints)
         self._actuators = tuple(actuators)
 
+        # Remove "grasp_site".
+        if self._hand_side == base.HandSide.RIGHT:
+            mjcf_utils.safe_find(self._mjcf_root, "site", "grasp_site").remove()
+
     def _add_mjcf_elements(self) -> None:
         # Add sites to the tips of the fingers.
         fingertip_sites = []
@@ -240,6 +244,30 @@ class ShadowHand(base.Hand):
             actuator_force_sensors.append(force_sensor_elem)
         self._actuator_velocity_sensors = tuple(actuator_velocity_sensors)
         self._actuator_force_sensors = tuple(actuator_force_sensors)
+
+        # Add touch sensors to the fingertips.
+        fingertip_touch_sensors = []
+        for tip_name in consts.FINGERTIP_BODIES:
+            tip_elem = mjcf_utils.safe_find(
+                self._mjcf_root, "body", self._prefix + tip_name
+            )
+            offset = _THUMBTIP_OFFSET if tip_name == "thdistal" else _FINGERTIP_OFFSET
+            touch_site = tip_elem.add(
+                "site",
+                name=tip_name + "_touch_site",
+                pos=(0.0, 0.0, offset),
+                type="sphere",
+                size=(0.01,),
+                group=composer.SENSOR_SITES_GROUP,
+                rgba=(0, 1, 0, 0.6),
+            )
+            touch_sensor = self._mjcf_root.sensor.add(
+                "touch",
+                site=touch_site,
+                name=tip_name + "_touch",
+            )
+            fingertip_touch_sensors.append(touch_sensor)
+        self._fingertip_touch_sensors = tuple(fingertip_touch_sensors)
 
     def _add_dofs(self) -> None:
         """Add forearm degrees of freedom."""
@@ -335,6 +363,10 @@ class ShadowHand(base.Hand):
     def actuator_force_sensors(self) -> Sequence[types.MjcfElement]:
         return self._actuator_force_sensors
 
+    @property
+    def fingertip_touch_sensors(self) -> Sequence[types.MjcfElement]:
+        return self._fingertip_touch_sensors
+
     # Action specs.
 
     def action_spec(self, physics: mjcf.Physics) -> specs.BoundedArray:
@@ -391,3 +423,12 @@ class ShadowHandObservables(base.HandObservables):
             return physics.bind(self._entity.fingertip_sites).xpos.ravel()
 
         return observable.Generic(raw_observation_callable=_get_fingertip_positions)
+
+    @composer.observable
+    def fingertip_force(self):
+        """Returns for each finger, the sum of forces felt at the fingertip."""
+
+        def _get_fingertip_force(physics: mjcf.Physics) -> np.ndarray:
+            return physics.bind(self._entity.fingertip_touch_sensors).sensordata
+
+        return observable.Generic(raw_observation_callable=_get_fingertip_force)
