@@ -1,4 +1,4 @@
-# RoboPianist: A Benchmark for High-Dimensional Robot Control
+# RoboPianist: Dexterous Piano Playing with Deep Reinforcement Learning
 
 [![build][tests-badge]][tests]
 [![docs][docs-badge]][docs]
@@ -126,10 +126,10 @@ See [docs/faq.md](docs/faq.md) for a list of frequently asked questions.
 If you use RoboPianist in your work, please use the following citation:
 
 ```bibtex
-@article{zakka2023robopianist,
-  author = {Zakka, Kevin and Smith, Laura and Gileadi, Nimrod and Howell, Taylor and Peng, Xue Bin and Singh, Sumeet and Tassa, Yuval and Florence, Pete and Zeng, Andy and Abbeel, Pieter},
-  title = {{RoboPianist: A Benchmark for High-Dimensional Robot Control}},
-  journal = {arXiv preprint arXiv:2304.04150},
+@inproceedings{robopianist2023,
+  author = {Zakka, Kevin and Wu, Philipp and Smith, Laura and Gileadi, Nimrod and Howell, Taylor and Peng, Xue Bin and Singh, Sumeet and Tassa, Yuval and Florence, Pete and Zeng, Andy and Abbeel, Pieter},
+  title = {RoboPianist: Dexterous Piano Playing with Deep Reinforcement Learning},
+  booktitle = {Conference on Robot Learning (CoRL)},
   year = {2023},
 }
 ```

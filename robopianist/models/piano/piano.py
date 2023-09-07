@@ -186,10 +186,8 @@ class Piano(composer.Entity):
             joints_pos = physics.bind(self.joints).qpos
             self._state[:] = np.clip(joints_pos, *self._qpos_range.T)
             self._normalized_state[:] = self._state / self._qpos_range[:, 1]
-            self._activation[:] = np.where(
-                np.abs(self._state - self._qpos_range[:, 1]) <= _KEY_THRESHOLD,
-                1.0,
-                0.0,
+            self._activation[:] = (
+                np.abs(self._state - self._qpos_range[:, 1]) <= _KEY_THRESHOLD
             )
         self._sustain_activation[:] = self._sustain_state >= _SUSTAIN_THRESHOLD
 

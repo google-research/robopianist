@@ -50,6 +50,10 @@ class MidiModule:
         activation: np.ndarray,
         sustain_activation: np.ndarray,
     ) -> None:
+        # Sanity check dtype since we use bitwise operators.
+        assert activation.dtype == bool
+        assert sustain_activation.dtype == bool
+
         timestep_events: List[midi_message.MidiMessage] = []
         message: midi_message.MidiMessage
 
