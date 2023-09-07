@@ -23,7 +23,7 @@ from mujoco_utils import composer_utils
 
 from robopianist import music, viewer
 from robopianist.suite.tasks import self_actuated_piano
-from robopianist.wrappers import PianoSoundVideoWrapper
+from robopianist.wrappers import MidiEvaluationWrapper, PianoSoundVideoWrapper
 
 _FILE = flags.DEFINE_string("file", "TwinkleTwinkleRousseau", "")
 _RECORD = flags.DEFINE_bool("record", False, "")
@@ -54,6 +54,7 @@ def main(_) -> None:
     env = composer_utils.Environment(
         recompile_physics=False, task=task, strip_singleton_obs_buffer_dim=True
     )
+    env = MidiEvaluationWrapper(env)
     if _RECORD.value:
         env = PianoSoundVideoWrapper(
             env,
@@ -103,6 +104,9 @@ def main(_) -> None:
         while not timestep.last():
             action = policy(timestep)
             timestep = env.step(action)
+
+    for k, v in env.get_musical_metrics().items():
+        np.testing.assert_equal(v, 1.0)
 
 
 if __name__ == "__main__":
