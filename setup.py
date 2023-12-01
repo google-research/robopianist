@@ -34,9 +34,9 @@ with open(_here / "README.md", "r") as f:
     readme = f.read()
 
 core_requirements = [
-    "dm_control>=1.0.9",
+    "dm_control>=1.0.15",
     "dm_env_wrappers>=0.0.11",
-    "mujoco>=2.3.1",
+    "mujoco>=3.0.1",
     "mujoco_utils>=0.0.6",
     "note_seq>=0.0.5",
     "pretty_midi>=0.2.10",
