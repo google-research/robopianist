@@ -63,16 +63,19 @@ if [ "$SKIP_SOUNDFONTS" = false ]; then
     # Copy soundfonts to robopianist.
     mkdir -p robopianist/soundfonts
     if [ ! -d "third_party/soundfonts" ]; then
-    echo "third_party/soundfonts does not exist. Run scripts/get_soundfonts.sh first."
-    exit 1
+        echo "third_party/soundfonts does not exist. Run scripts/get_soundfonts.sh first."
+        exit 1
     fi
     cp -r third_party/soundfonts/* robopianist/soundfonts
+fi
 
-    # Copy shadow_hand menagerie model to robopianist.
-    mkdir -p robopianist/models/hands/third_party/shadow_hand
-    if [ ! -d "third_party/mujoco_menagerie/shadow_hand" ]; then
+# Copy shadow_hand menagerie model to robopianist.
+cd third_party/mujoco_menagerie
+git checkout 1afc8be64233dcfe943b2fe0c505ec1e87a0a13e
+cd ../..
+mkdir -p robopianist/models/hands/third_party/shadow_hand
+if [ ! -d "third_party/mujoco_menagerie/shadow_hand" ]; then
     echo "third_party/mujoco_menagerie/shadow_hand does not exist. Run git submodule init && git submodule update first."
     exit 1
-    fi
-    cp -r third_party/mujoco_menagerie/shadow_hand/* robopianist/models/hands/third_party/shadow_hand
 fi
+cp -r third_party/mujoco_menagerie/shadow_hand/* robopianist/models/hands/third_party/shadow_hand
