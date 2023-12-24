@@ -37,6 +37,7 @@ This codebase contains software and tasks for the benchmark, and is powered by [
 
 ## Latest Updates
 
+- [24/12/2023] Updated install script so that it checks out the correct Menagerie commit. Please re-run `bash scripts/install_deps.sh` to update your installation.
 - [17/08/2023] Added a [pixel wrapper](robopianist/wrappers/pixels.py) for augmenting the observation space with RGB images.
 - [11/08/2023] Code to train the model-free RL policies is now public, see [robopianist-rl](https://github.com/kevinzakka/robopianist-rl).
 
