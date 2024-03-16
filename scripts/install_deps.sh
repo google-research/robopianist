@@ -16,15 +16,21 @@
 # Install dependencies (macOS and Linux).
 # Command line arguments:
 #   --no-soundfonts: Skip downloading soundfonts.
+#   --no-menagerie: Skip copying shadow_hand menagerie model.
 
 set -x
 
 SKIP_SOUNDFONTS=false
+SKIP_MENAGERIE=false
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
         --no-soundfonts)
             SKIP_SOUNDFONTS=true
+            shift
+            ;;
+        --no-menagerie)
+            SKIP_MENAGERIE=true
             shift
             ;;
         *)
@@ -70,12 +76,14 @@ if [ "$SKIP_SOUNDFONTS" = false ]; then
 fi
 
 # Copy shadow_hand menagerie model to robopianist.
-cd third_party/mujoco_menagerie
-git checkout 1afc8be64233dcfe943b2fe0c505ec1e87a0a13e
-cd ../..
-mkdir -p robopianist/models/hands/third_party/shadow_hand
-if [ ! -d "third_party/mujoco_menagerie/shadow_hand" ]; then
-    echo "third_party/mujoco_menagerie/shadow_hand does not exist. Run git submodule init && git submodule update first."
-    exit 1
+if [ "$SKIP_MENAGERIE" = false ]; then
+    cd third_party/mujoco_menagerie
+    git checkout 1afc8be64233dcfe943b2fe0c505ec1e87a0a13e
+    cd ../..
+    mkdir -p robopianist/models/hands/third_party/shadow_hand
+    if [ ! -d "third_party/mujoco_menagerie/shadow_hand" ]; then
+        echo "third_party/mujoco_menagerie/shadow_hand does not exist. Run git submodule init && git submodule update first."
+        exit 1
+    fi
+    cp -r third_party/mujoco_menagerie/shadow_hand/* robopianist/models/hands/third_party/shadow_hand
 fi
-cp -r third_party/mujoco_menagerie/shadow_hand/* robopianist/models/hands/third_party/shadow_hand
