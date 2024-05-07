@@ -31,6 +31,7 @@ This codebase contains software and tasks for the benchmark, and is powered by [
 - [FAQ](#faq)
 - [Citing RoboPianist](#citing-robopianist)
 - [Acknowledgements](#acknowledgements)
+- [Works that have used RoboPianist](#works-that-have-used-robopianist)
 - [License and Disclaimer](#license-and-disclaimer)
 
 -------
@@ -143,6 +144,10 @@ We would like to thank the following people for making this project possible:
 - [Ilya Kostrikov](https://www.kostrikov.xyz/) for constantly raising the bar for RL engineering and for invaluable debugging help.
 - The [Magenta](https://magenta.tensorflow.org/) team for helpful pointers and feedback.
 - The [MuJoCo](https://mujoco.org/) team for the development of the MuJoCo physics engine and their support throughout the project.
+
+## Works that have used RoboPianist
+
+- *Privileged Sensing Scaffolds Reinforcement Learning*, Hu et. al. ([paper](https://openreview.net/forum?id=EpVe8jAjdx), [website](https://penn-pal-lab.github.io/scaffolder/))
 
 ## License and Disclaimer
 
