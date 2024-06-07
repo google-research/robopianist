@@ -42,7 +42,7 @@ core_requirements = [
     "pretty_midi>=0.2.10",
     "pyaudio>=0.2.12",
     "pyfluidsynth>=1.3.2",
-    "scikit-learn",
+    "scikit-learn==1.4.2",
     "termcolor",
     "tqdm",
 ]
