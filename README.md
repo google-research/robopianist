@@ -19,20 +19,21 @@ RoboPianist is a new benchmarking suite for high-dimensional control, targeted a
 
 This codebase contains software and tasks for the benchmark, and is powered by [MuJoCo](https://mujoco.org/).
 
-- [Latest Updates](#latest-updates)
-- [Getting Started](#getting-started)
-- [Installation](#installation)
-  - [Install from source](#install-from-source)
-  - [Install from PyPI](#install-from-pypi)
-  - [Optional: Download additional soundfonts](#optional-download-additional-soundfonts)
-- [MIDI Dataset](#midi-dataset)
-- [CLI](#cli)
-- [Contributing](#contributing)
-- [FAQ](#faq)
-- [Citing RoboPianist](#citing-robopianist)
-- [Acknowledgements](#acknowledgements)
-- [Works that have used RoboPianist](#works-that-have-used-robopianist)
-- [License and Disclaimer](#license-and-disclaimer)
+- [RoboPianist: Dexterous Piano Playing with Deep Reinforcement Learning](#robopianist-dexterous-piano-playing-with-deep-reinforcement-learning)
+  - [Latest Updates](#latest-updates)
+  - [Getting Started](#getting-started)
+  - [Installation](#installation)
+    - [Install from source](#install-from-source)
+    - [Install from PyPI](#install-from-pypi)
+    - [Optional: Download additional soundfonts](#optional-download-additional-soundfonts)
+  - [MIDI Dataset](#midi-dataset)
+  - [CLI](#cli)
+  - [Contributing](#contributing)
+  - [FAQ](#faq)
+  - [Citing RoboPianist](#citing-robopianist)
+  - [Acknowledgements](#acknowledgements)
+  - [Works that have used RoboPianist](#works-that-have-used-robopianist)
+  - [License and Disclaimer](#license-and-disclaimer)
 
 -------
 
@@ -76,6 +77,13 @@ conda create -n pianist python=3.10
 conda activate pianist
 
 pip install -e ".[dev]"
+```
+
+Next, install the latest GCC and libstdc++ using onda.
+
+```bash
+conda install -c conda-forge gcc
+conda install -c conda-forge libstdcxx-ng
 ```
 
 To test your installation, run `make test` and verify that all tests pass.

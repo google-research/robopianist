@@ -6,3 +6,4 @@ soundfonts/
 build/
 dist/
 pig_single_finger/
+.vscode/
